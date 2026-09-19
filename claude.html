@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FYP Management System — City University Peshawar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"/>
+<!-- Chart.js CDN for graphs/charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- =====================================================
+     MODULE TYPE: CSS (Cascading Style Sheets)
+     PURPOSE: Academic color scheme, layout, components
+     All styles are embedded here — no external .css file needed.
+     To run: Simply open this .html file in any browser.
+     ===================================================== -->
+<style>
+/* ── ACADEMIC COLOR VARIABLES ── */
+:root{
+  --navy:#1a3a5c;--navy-dk:#0f2540;--navy-lt:#2e5f8a;
+  --gold:#c8a84b;--gold-lt:#f0d080;--gold-dk:#a07830;
+  --green:#1b6b3a;--green-lt:#d1f0dc;
+  --red:#8b1a1a;--red-lt:#fde8e8;
+  --amber:#7a4f00;--amber-lt:#fff3cd;
+  --blue-lt:#dbeafe;--white:#fff;
+  --bg:#f0f3f8;--bg2:#e5eaf2;--card:#fff;
+  --border:#d0d9e8;--text:#1a2332;--muted:#5a6a80;--light:#8a9bb0;
+  --shadow:0 2px 12px rgba(15,37,64,.10);--shadow-md:0 6px 24px rgba(15,37,64,.16);
+  --r:13px;--r-sm:8px;--r-lg:20px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:#b0c0d8;border-radius:6px}
+
+/* ── HIDDEN / SHOW ── */
+.hidden{display:none!important}
+
+/* ── AUTH LAYOUT ── */
+#auth-wrap{min-height:100vh;display:flex;align-items:stretch}
+.auth-left{flex:1;background:linear-gradient(155deg,var(--navy-dk) 0%,var(--navy) 55%,var(--navy-lt) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 50px;position:relative;overflow:hidden}
+.auth-left::before{content:'';position:absolute;width:380px;height:380px;background:radial-gradient(circle,rgba(200,168,75,.18) 0%,transparent 70%);top:-80px;right:-80px;border-radius:50%}
+.auth-left::after{content:'';position:absolute;width:260px;height:260px;background:radial-gradient(circle,rgba(200,168,75,.12) 0%,transparent 70%);bottom:-60px;left:-60px;border-radius:50%}
+.al-logo{text-align:center;position:relative;z-index:1;margin-bottom:36px}
+.al-crest{width:96px;height:96px;background:linear-gradient(135deg,var(--gold),var(--gold-dk));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 32px rgba(200,168,75,.45);font-size:44px}
+.al-logo h1{font-family:'Playfair Display',serif;font-size:25px;color:#fff;margin-bottom:5px;line-height:1.3}
+.al-logo p{color:var(--gold-lt);font-size:13px;letter-spacing:.4px}
+.al-features{position:relative;z-index:1;width:100%;max-width:340px}
+.al-features h2{font-family:'Playfair Display',serif;font-size:19px;color:#fff;margin-bottom:14px}
+.feat-row{display:flex;align-items:center;gap:13px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.09)}
+.feat-row:last-child{border-bottom:none}
+.feat-ico{width:34px;height:34px;background:rgba(200,168,75,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.feat-row span{color:rgba(255,255,255,.8);font-size:12.5px}
+.auth-right{width:480px;background:#fff;display:flex;flex-direction:column;justify-content:center;padding:44px 42px;overflow-y:auto}
+.auth-right-inner{width:100%}
+.ar-logo{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.ar-logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--navy),var(--navy-lt));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.ar-logo-text .n{font-family:'Playfair Display',serif;font-size:14.5px;font-weight:700;color:var(--navy-dk)}
+.ar-logo-text .s{font-size:11.5px;color:var(--muted)}
+.auth-right h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--navy-dk);margin-bottom:4px}
+.auth-right .sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+
+/* ── ROLE TABS ── */
+.role-tabs{display:flex;gap:5px;background:var(--bg2);padding:4px;border-radius:var(--r-sm);margin-bottom:20px}
+.role-tab{flex:1;padding:7px 4px;border:none;border-radius:6px;font-size:11.5px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:.2s;font-family:'Inter',sans-serif;text-transform:capitalize}
+.role-tab.active{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(26,58,92,.25)}
+
+/* ── FORM ELEMENTS ── */
+.fg{margin-bottom:15px;width:100%}
+.fg label{display:block;font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:5px}
+.fg label .req{color:var(--red)}
+.fg input,.fg select,.fg textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;font-size:13.5px;font-family:'Inter',sans-serif;color:var(--text);background:#fff;transition:.2s;outline:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--navy-lt);box-shadow:0 0 0 3px rgba(46,95,138,.12)}
+.fg textarea{resize:vertical;min-height:80px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.err-box{display:none;background:var(--red-lt);color:var(--red);padding:10px 13px;border-radius:var(--r-sm);font-size:13px;margin-bottom:13px;border:1px solid rgba(139,26,26,.2)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:var(--r-sm);padding:10px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;text-decoration:none;white-space:nowrap;vertical-align:middle}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+.btn-navy{background:linear-gradient(135deg,var(--navy),var(--navy-lt));color:#fff;box-shadow:0 3px 12px rgba(26,58,92,.28)}
+.btn-navy:hover{background:linear-gradient(135deg,var(--navy-dk),var(--navy));transform:translateY(-1px)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-dk),var(--gold));color:#fff}
+.btn-gold:hover{transform:translateY(-1px)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#145229}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#6b1010}
+.btn-grey{background:var(--bg2);color:var(--text)}.btn-grey:hover{background:#d0d9e8}
+.btn-outline{background:transparent;border:1.5px solid var(--navy);color:var(--navy)}.btn-outline:hover{background:var(--navy);color:#fff}
+.btn-sm{padding:6px 13px;font-size:12px}.btn-lg{padding:12px 26px;font-size:14.5px}.btn-full{width:100%;justify-content:center}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* ── APP SHELL ── */
+#app-wrap{display:none;min-height:100vh}
+.shell{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:252px;background:var(--navy-dk);height:100vh;position:sticky;top:0;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;z-index:50;transition:.25s}
+.sb-brand{padding:20px 17px;border-bottom:1px solid rgba(255,255,255,.09);display:flex;align-items:center;gap:12px}
+.sb-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--gold),var(--gold-dk));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;box-shadow:0 3px 10px rgba(200,168,75,.35)}
+.sb-name{font-family:'Playfair Display',serif;font-size:13px;color:#fff;font-weight:700}
+.sb-uni{font-size:10.5px;color:rgba(255,255,255,.38)}
+.sb-nav{flex:1;padding:13px 8px}
+.sb-sec{font-size:9.5px;font-weight:700;letter-spacing:1.6px;color:rgba(255,255,255,.28);text-transform:uppercase;padding:10px 12px 5px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;border:none;background:transparent;color:rgba(255,255,255,.52);font-size:13px;font-weight:500;cursor:pointer;width:100%;text-align:left;transition:.2s;font-family:'Inter',sans-serif;margin-bottom:2px;position:relative}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+.nav-btn.active{background:linear-gradient(90deg,rgba(200,168,75,.28),rgba(200,168,75,.10));color:var(--gold-lt);font-weight:700}
+.nav-btn.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:60%;background:var(--gold);border-radius:0 3px 3px 0}
+.nav-btn svg{width:16px;height:16px;flex-shrink:0}
+.nb-badge{margin-left:auto;background:#dc2626;color:#fff;border-radius:50%;width:17px;height:17px;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sb-footer{padding:12px 8px;border-top:1px solid rgba(255,255,255,.09)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:9px 11px;background:rgba(255,255,255,.07);border-radius:10px;margin-bottom:7px}
+.sb-av{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--navy-lt),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12.5px;flex-shrink:0;border:2px solid var(--gold)}
+.sb-uname{font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-urole{font-size:10.5px;color:rgba(255,255,255,.42);text-transform:capitalize}
+
+/* ── TOPBAR ── */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;gap:13px}
+.tb-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy-dk);font-weight:700}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-icon{width:35px;height:35px;border-radius:9px;border:1.5px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);position:relative;transition:.2s}
+.tb-icon:hover{background:var(--bg2);color:var(--navy)}
+.tb-icon svg{width:17px;height:17px}
+.tb-notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:#dc2626;border-radius:50%;border:2px solid #fff}
+.tb-av{width:33px;height:33px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-lt));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;flex-shrink:0}
+.main-col{flex:1;display:flex;flex-direction:column;min-width:0}
+.page-area{flex:1;padding:24px;overflow-y:auto}
+
+/* ── PAGE HEADER ── */
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;flex-wrap:wrap;gap:13px}
+.ph h1{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;color:var(--navy-dk);margin-bottom:3px}
+.ph p{color:var(--muted);font-size:13px}
+.ph-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:15px;margin-bottom:22px}
+.sc{background:var(--card);border-radius:var(--r);padding:20px 20px;box-shadow:var(--shadow);display:flex;align-items:center;gap:15px;border:1px solid var(--border);transition:.2s}
+.sc:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.sc-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.ic-n{background:rgba(26,58,92,.1)}.ic-g{background:rgba(200,168,75,.15)}.ic-gr{background:rgba(27,107,58,.1)}.ic-r{background:rgba(139,26,26,.1)}.ic-a{background:rgba(122,79,0,.1)}.ic-b{background:rgba(30,58,95,.1)}
+.sc-v{font-family:'Playfair Display',serif;font-size:27px;font-weight:700;color:var(--navy-dk);line-height:1}
+.sc-l{font-size:12px;color:var(--muted);font-weight:500;margin-top:3px}
+.sc-s{font-size:11px;color:var(--light);margin-top:2px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:18px}
+.card:last-child,.card-last{margin-bottom:0}
+.ch{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:11px;flex-wrap:wrap}
+.ch h3{font-family:'Playfair Display',serif;font-size:16.5px;color:var(--navy-dk);font-weight:700}
+.cb{padding:20px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.b-ok{background:var(--green-lt);color:var(--green)}
+.b-pend{background:var(--amber-lt);color:var(--amber)}
+.b-rev{background:var(--red-lt);color:var(--red)}
+.b-rej{background:var(--red-lt);color:var(--red)}
+.b-conf{background:var(--blue-lt);color:#1e3a5f}
+.b-gold{background:rgba(200,168,75,.18);color:var(--gold-dk)}
+.b-ph1{background:#e0e7ff;color:#3730a3}
+.b-ph2{background:#fce7f3;color:#9d174d}
+
+/* ── PROGRESS ── */
+.prog-wrap{height:8px;background:var(--bg2);border-radius:8px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--navy-lt));border-radius:8px;transition:width .6s ease}
+.pf-gold{background:linear-gradient(90deg,var(--gold-dk),var(--gold))}
+.pf-green{background:linear-gradient(90deg,var(--green),#2d9a5a)}
+.pf-red{background:var(--red)}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--bg2)}
+th{padding:10px 15px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.55px;border-bottom:2px solid var(--border);white-space:nowrap}
+td{padding:12px 15px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:middle}
+tbody tr:hover{background:var(--bg)}
+tbody tr:last-child td{border-bottom:none}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(10,20,40,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;animation:fadeIn .15s ease}
+.modal{background:#fff;border-radius:var(--r-lg);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.22);animation:slideUp .2s ease}
+.modal-lg{max-width:760px}
+.mh{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:1}
+.mh h2{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy-dk)}
+.mclose{width:31px;height:31px;border-radius:7px;border:none;background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:.2s}
+.mclose:hover{background:var(--red-lt);color:var(--red)}
+.mclose svg{width:14px;height:14px}
+.mb{padding:20px 24px}
+.mf{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+
+/* ── TOAST ── */
+.toast-con{position:fixed;top:18px;right:18px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;align-items:center;gap:10px;padding:12px 17px;border-radius:11px;min-width:250px;max-width:360px;box-shadow:var(--shadow-md);font-size:13px;font-weight:500;animation:slideLeft .25s ease}
+.t-ok{background:var(--green);color:#fff}.t-err{background:var(--red);color:#fff}.t-warn{background:var(--amber);color:#fff}.t-info{background:var(--navy);color:#fff}
+
+/* ── FILTER BAR ── */
+.fbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.fbtn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12.5px;font-weight:500;cursor:pointer;transition:.2s;font-family:'Inter',sans-serif}
+.fbtn.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.fbtn:hover:not(.active){border-color:var(--navy);color:var(--navy)}
+.srch-box{display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:6px 11px;margin-left:auto}
+.srch-box svg{width:14px;height:14px;color:var(--light);flex-shrink:0}
+.srch-box input{border:none;outline:none;font-size:13px;font-family:'Inter',sans-serif;width:160px;color:var(--text);background:transparent}
+
+/* ── MILESTONE TRACK ── */
+.ms-track{display:flex;align-items:flex-start;overflow-x:auto;padding-bottom:6px}
+.ms-item{display:flex;flex-direction:column;align-items:center;flex:1;min-width:68px}
+.ms-conn{display:flex;align-items:center;width:100%}
+.ms-line{flex:1;height:3px;background:var(--border)}.ms-line.done{background:var(--green)}
+.ms-dot{width:31px;height:31px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--light);flex-shrink:0;font-weight:700;transition:.2s}
+.ms-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.ms-dot.cur{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 0 0 4px rgba(26,58,92,.14)}
+.ms-lbl{font-size:10px;color:var(--muted);text-align:center;margin-top:6px;max-width:63px;line-height:1.3}
+.ms-lbl.done{color:var(--green);font-weight:600}.ms-lbl.cur{color:var(--navy);font-weight:600}
+
+/* ── AVATAR ── */
+.av{display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--navy-lt));color:#fff;font-weight:700;flex-shrink:0}
+.av-sm{width:32px;height:32px;font-size:12px}
+.av-md{width:38px;height:38px;font-size:14px}
+.av-lg{width:52px;height:52px;font-size:20px}
+.av-xl{width:70px;height:70px;font-size:26px}
+.av-gold{background:linear-gradient(135deg,var(--gold-dk),var(--gold))}
+.av-green{background:linear-gradient(135deg,var(--green),#2d9a5a)}
+
+/* ── INFO GRID ── */
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ig-item label{font-size:10.5px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.55px;display:block;margin-bottom:3px}
+.ig-item span{font-size:13.5px;color:var(--text);font-weight:500}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.tab{padding:9px 17px;border:none;background:transparent;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.tab.active{color:var(--navy);border-bottom-color:var(--navy);font-weight:700}
+.tab:hover:not(.active){color:var(--text)}
+
+/* ── PROFILE HERO ── */
+.prof-hero{background:linear-gradient(135deg,var(--navy-dk) 0%,var(--navy) 60%,var(--navy-lt) 100%);border-radius:var(--r);padding:26px;display:flex;align-items:center;gap:20px;margin-bottom:18px;position:relative;overflow:hidden}
+.prof-hero::after{content:'🎓';position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:76px;opacity:.08}
+.ph-av{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dk),var(--gold));border:3px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;font-weight:800;flex-shrink:0}
+.ph-info h2{font-family:'Playfair Display',serif;font-size:21px;color:#fff;margin-bottom:4px}
+.ph-info p{color:rgba(255,255,255,.7);font-size:13px}
+.ph-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.ptag{background:rgba(255,255,255,.13);color:rgba(255,255,255,.85);border-radius:20px;padding:3px 11px;font-size:11.5px;font-weight:500}
+
+/* ── CHAT ── */
+.chat-area{display:flex;flex-direction:column;gap:11px;max-height:340px;overflow-y:auto;padding:15px}
+.msg-in{max-width:74%;padding:10px 14px;border-radius:12px;background:var(--bg2);color:var(--text);align-self:flex-start;border-bottom-left-radius:3px;font-size:13px;line-height:1.5}
+.msg-out{max-width:74%;padding:10px 14px;border-radius:12px;background:var(--navy);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;font-size:13px;line-height:1.5}
+.msg-meta{font-size:10.5px;color:var(--light);margin-top:3px}
+.msg-meta.r{text-align:right}
+.chat-inp{display:flex;gap:9px;padding:12px 15px;border-top:1px solid var(--border);align-items:center}
+.chat-inp input{flex:1;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 13px;font-size:13.5px;font-family:'Inter',sans-serif;outline:none;transition:.2s}
+.chat-inp input:focus{border-color:var(--navy-lt)}
+
+/* ── PHASE BAR ── */
+.phase-bar{display:flex;background:var(--bg2);border-radius:var(--r-sm);overflow:hidden;margin-bottom:18px}
+.ps{flex:1;padding:11px 15px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);border-right:2px solid var(--border);transition:.2s}
+.ps:last-child{border-right:none}
+.ps.done-p{background:var(--green-lt);color:var(--green)}
+.ps.active-p{background:var(--navy);color:#fff}
+.ps.lock-p{opacity:.4}
+
+/* ── BOXES ── */
+.warn-box{background:var(--amber-lt);border:1px solid rgba(122,79,0,.2);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--text);margin-bottom:13px}
+.info-box{background:var(--blue-lt);border:1px solid rgba(30,58,95,.15);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--text);margin-bottom:13px}
+.ok-box{background:var(--green-lt);border:1px solid rgba(27,107,58,.2);border-radius:10px;padding:13px 15px;font-size:13px;color:var(--text);margin-bottom:13px}
+
+/* ── GRID HELPERS ── */
+.g2{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.g11{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+.div-line{height:1px;background:var(--border);margin:15px 0}
+.flex-c{display:flex;align-items:center}
+.gap-8{gap:8px}.gap-12{gap:12px}
+.mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}
+.text-muted{color:var(--muted)}.text-sm{font-size:12.5px}
+.fw7{font-weight:700}.serif{font-family:'Playfair Display',serif}
+.trunc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 18px;color:var(--muted)}
+.empty .ei{font-size:46px;margin-bottom:13px;opacity:.55}
+.empty h3{font-size:17px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.empty p{font-size:13.5px}
+
+/* ── REGISTER TOGGLE ── */
+.auth-toggle{text-align:center;margin-top:16px;font-size:13px;color:var(--muted)}
+.auth-toggle a{color:var(--navy);cursor:pointer;font-weight:600;text-decoration:none}
+.auth-toggle a:hover{text-decoration:underline}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(17px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(35px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── RESPONSIVE ── */
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
+@media(max-width:900px){
+  .auth-left{display:none}.auth-right{width:100%}
+  .sidebar{position:fixed;left:-258px;transition:left .25s;height:100dvh}.sidebar.open{left:0}
+  .mob-overlay.show{display:block}
+  .g2,.g11,.g3{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .page-area{padding:14px}.topbar{padding:0 13px}
+  .stats-grid{grid-template-columns:1fr}.frow{grid-template-columns:1fr}.igrid{grid-template-columns:1fr}
+}
+@media print{.sidebar,.topbar,.btn,.toast-con{display:none!important}.page-area{padding:0}}
+</style>
+</head>
+<body>
+
+<!-- ==========================================================
+  MODULE: AUTH SCREEN
+  CODE TYPE: HTML + CSS + JavaScript
+  PURPOSE: Login & Registration for all 3 roles
+  HOW TO RUN: Open this file in any browser (Chrome, Firefox, Edge)
+  No server required — everything runs in the browser.
+  ========================================================== -->
+<div id="auth-wrap">
+  <div class="auth-left">
+    <div class="al-logo">
+      <div class="al-crest">🎓</div>
+      <h1>FYP Management System</h1>
+      <p>City University of Science &amp; IT<br>Peshawar, Pakistan</p>
+    </div>
+    <div class="al-features">
+      <h2>Centralized FYP Platform</h2>
+      <div class="feat-row"><div class="feat-ico">📋</div><span>Submit proposals with IEEE format docs</span></div>
+      <div class="feat-row"><div class="feat-ico">👨‍🏫</div><span>Select 3 supervisors &amp; get matched</span></div>
+      <div class="feat-row"><div class="feat-ico">📊</div><span>Real-time progress &amp; milestone tracking</span></div>
+      <div class="feat-row"><div class="feat-ico">🏆</div><span>FCC Showcasing &amp; Pitching sessions</span></div>
+      <div class="feat-row"><div class="feat-ico">💬</div><span>Direct messaging for all entities</span></div>
+      <div class="feat-row"><div class="feat-ico">📅</div><span>Phase 1 → Phase 2 lifecycle with attendance</span></div>
+    </div>
+  </div>
+  <div class="auth-right" id="auth-right">
+    <div class="auth-right-inner" id="login-panel">
+      <div class="ar-logo">
+        <div class="ar-logo-icon">🎓</div>
+        <div class="ar-logo-text"><div class="n">FYP Management System</div><div class="s">City University Peshawar</div></div>
+      </div>
+      <h2>Welcome Back</h2>
+      <p class="sub" id="login-sub">Sign in to your account</p>
+      <div class="role-tabs" id="role-tabs">
+        <button class="role-tab active" onclick="selectRole('student')">Student</button>
+        <button class="role-tab" onclick="selectRole('supervisor')">Supervisor</button>
+        <button class="role-tab" onclick="selectRole('coordinator')">Coordinator</button>
+      </div>
+      <div class="fg"><label>Student ID / Email <span class="req">*</span></label>
+        <input id="li-email" placeholder="e.g. 2021-SE-101 or email@cu.edu.pk" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="fg"><label>Password <span class="req">*</span></label>
+        <input id="li-pass" type="password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="err-box" id="li-err"></div>
+      <button class="btn btn-navy btn-full btn-lg" onclick="doLogin()" style="margin-bottom:10px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign In
+      </button>
+      <button class="btn btn-grey btn-full btn-sm" onclick="autofill()" style="margin-bottom:6px">✨ Auto-fill demo credentials</button>
+      <div class="auth-toggle">Don't have an account? <a onclick="showRegister()">Register here</a></div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:16px;text-align:center">
+        <p style="font-size:11.5px;color:var(--muted)">Demo: Student→2021-SE-101/student123 &nbsp;|&nbsp; Supervisor→mohsin@cu.edu.pk/super123 &nbsp;|&nbsp; Coordinator→faraz@cu.edu.pk/coord123</p>
+      </div>
+    </div>
+    <!-- REGISTER PANEL -->
+    <div class="auth-right-inner hidden" id="reg-panel">
+      <div class="ar-logo">
+        <div class="ar-logo-icon">🎓</div>
+        <div class="ar-logo-text"><div class="n">Create Account</div><div class="s">FYP Management System</div></div>
+      </div>
+      <h2>Register</h2>
+      <p class="sub">Create your university FYP account</p>
+      <div class="role-tabs" id="reg-role-tabs">
+        <button class="role-tab active" onclick="selectRegRole('student')">Student</button>
+        <button class="role-tab" onclick="selectRegRole('supervisor')">Supervisor</button>
+        <button class="role-tab" onclick="selectRegRole('coordinator')">Coordinator</button>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Full Name <span class="req">*</span></label><input id="rg-name" placeholder="Your full name"/></div>
+        <div class="fg"><label>Email <span class="req">*</span></label><input id="rg-email" type="email" placeholder="email@cu.edu.pk"/></div>
+      </div>
+      <div class="frow">
+        <div class="fg" id="rg-sid-wrap"><label>Student ID <span class="req">*</span></label><input id="rg-sid" placeholder="2021-SE-XXX"/></div>
+        <div class="fg"><label>Department</label><input id="rg-dept" placeholder="e.g. SE, CS"/></div>
+      </div>
+      <div class="fg" id="rg-credits-wrap"><label>Credit Hours Completed</label><input id="rg-credits" type="number" placeholder="e.g. 96" min="0" max="140"/></div>
+      <div class="fg" id="rg-areas-wrap" style="display:none"><label>Research Areas (comma separated)</label><input id="rg-areas" placeholder="e.g. AI, Web Dev, Mobile Apps"/></div>
+      <div class="fg" id="rg-desig-wrap" style="display:none"><label>Designation</label><input id="rg-desig" placeholder="e.g. Assistant Professor"/></div>
+      <div class="fg"><label>Password <span class="req">*</span></label><input id="rg-pass" type="password" placeholder="Create a strong password"/></div>
+      <div class="err-box" id="rg-err"></div>
+      <button class="btn btn-navy btn-full btn-lg" onclick="doRegister()" style="margin-bottom:10px">Create Account</button>
+      <div class="auth-toggle">Already have an account? <a onclick="showLogin()">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================
+  MODULE: APP SHELL
+  CODE TYPE: HTML Structure
+  PURPOSE: Main application skeleton after login
+  ========================================================== -->
+<div id="app-wrap">
+  <div class="mob-overlay" id="mob-ov" onclick="closeSb()"></div>
+  <div class="shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-brand">
+        <div class="sb-logo">🎓</div>
+        <div><div class="sb-name">FYP System</div><div class="sb-uni">CU Peshawar</div></div>
+      </div>
+      <nav class="sb-nav" id="sb-nav"></nav>
+      <div class="sb-footer">
+        <div class="sb-user">
+          <div class="sb-av" id="sb-av">?</div>
+          <div><div class="sb-uname" id="sb-uname">—</div><div class="sb-urole" id="sb-urole">—</div></div>
+        </div>
+        <button class="nav-btn" onclick="logout()" style="color:rgba(255,100,100,.75)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out
+        </button>
+      </div>
+    </aside>
+    <!-- MAIN -->
+    <div class="main-col">
+      <header class="topbar">
+        <div class="flex-c gap-12">
+          <button class="tb-icon" onclick="toggleSb()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <span class="tb-title" id="tb-title">Dashboard</span>
+        </div>
+        <div class="tb-right">
+          <button class="tb-icon" onclick="goPage('messages')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </button>
+          <button class="tb-icon" onclick="goPage('notifications')" id="tb-notif">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <div class="tb-notif-dot hidden" id="notif-dot"></div>
+          </button>
+          <div class="tb-av" id="tb-av">?</div>
+        </div>
+      </header>
+      <main class="page-area" id="page-area"></main>
+    </div>
+  </div>
+</div>
+<div class="toast-con" id="toast-con"></div>
+<div id="modal-root"></div>
+
+<!-- ==========================================================
+  MODULE: JAVASCRIPT — ALL APPLICATION LOGIC
+  CODE TYPE: Vanilla JavaScript (ES6+)
+  PURPOSE: Data storage, routing, all page rendering, all features
+  NOTE: This single <script> block contains ALL JS.
+        No external libraries except Chart.js (loaded via CDN above).
+  ========================================================== -->
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════════════
+// DATA LAYER  (simulates a MySQL database in browser memory)
+// In a real system: replace these with PHP API fetch() calls
+// ═══════════════════════════════════════════════════════════
+let DB = {
+  users:[
+    {id:1,name:'Sanan Ahmed',email:'sanan@cu.edu.pk',sId:'2021-SE-101',pass:'student123',role:'student',dept:'SE',section:'SB',semester:7,credits:96,cgpa:'3.4',phone:'0312-1234567',joined:'2021-09-01',rejections:0,att:{p1:100,proposal:100,mid:85,final:0}},
+    {id:2,name:'Ali Hassan',email:'ali@cu.edu.pk',sId:'2021-SE-102',pass:'student123',role:'student',dept:'SE',section:'SB',semester:7,credits:82,cgpa:'3.1',phone:'0333-9876543',joined:'2021-09-01',rejections:1,att:{p1:75,proposal:100,mid:60,final:0}},
+    {id:3,name:'Fatima Shah',email:'fatima@cu.edu.pk',sId:'2021-SE-103',pass:'student123',role:'student',dept:'SE',section:'SA',semester:7,credits:78,cgpa:'3.7',phone:'0345-5678901',joined:'2021-09-01',rejections:0,att:{p1:100,proposal:100,mid:100,final:0}},
+    {id:4,name:'Usman Khan',email:'usman@cu.edu.pk',sId:'2021-SE-104',pass:'student123',role:'student',dept:'SE',section:'SA',semester:5,credits:60,cgpa:'2.9',phone:'0321-4567890',joined:'2022-09-01',rejections:3,att:{p1:0,proposal:0,mid:0,final:0}},
+    {id:5,name:'Sara Bibi',email:'sara@cu.edu.pk',sId:'2021-SE-105',pass:'student123',role:'student',dept:'SE',section:'SB',semester:7,credits:88,cgpa:'3.5',phone:'0311-6543210',joined:'2021-09-01',rejections:0,att:{p1:100,proposal:100,mid:90,final:0}},
+    {id:6,name:'Sir Mohsin',email:'mohsin@cu.edu.pk',sId:'FAC-001',pass:'super123',role:'supervisor',dept:'SE',desig:'Assistant Professor',areas:['Software Engineering','Web Development','Mobile Apps'],maxS:5,phone:'0300-1112233'},
+    {id:7,name:'Dr. Arif',email:'arif@cu.edu.pk',sId:'FAC-002',pass:'super123',role:'supervisor',dept:'CS',desig:'Associate Professor',areas:['AI','Machine Learning','Data Science'],maxS:4,phone:'0301-4455667'},
+    {id:8,name:'Ms. Nadia',email:'nadia@cu.edu.pk',sId:'FAC-003',pass:'super123',role:'supervisor',dept:'SE',desig:'Lecturer',areas:['Networking','Cybersecurity','IoT'],maxS:4,phone:'0302-7788990'},
+    {id:9,name:'Sir Faraz',email:'faraz@cu.edu.pk',sId:'COORD-01',pass:'coord123',role:'coordinator',dept:'SE',desig:'FYP Coordinator',phone:'0303-9900112'},
+    {id:10,name:'Dr. Imran',email:'dean@cu.edu.pk',sId:'DEAN-01',pass:'dean123',role:'coordinator',dept:'Admin',desig:'Dean',phone:'0304-3344556'},
+  ],
+  projects:[
+    {id:1,sId:1,supId:6,status:'phase2',phase:'phase2',prog:65,title:'Smart Campus Navigation App',desc:'A mobile application for campus navigation using AR and BLE beacons.',area:'mobile',submitted:'2025-01-10',approved:'2025-01-14',fcc:null,fccNote:'',supReqs:[{sid:6,st:'accepted'},{sid:7,st:'pending'},{sid:8,st:'rejected'}],ms:[{n:'Proposal',d:true,dt:'2025-01-14'},{n:'Lit Review',d:true,dt:'2025-01-28'},{n:'SRS',d:true,dt:'2025-02-10'},{n:'Design',d:false,dt:null},{n:'Impl.',d:false,dt:null},{n:'Testing',d:false,dt:null},{n:'Defense',d:false,dt:null}],grades:{proposal:85,mid:78,final:null,viva:null},pitchings:[{nm:'Idea Pitch',date:'2025-01-20',score:82,note:'Good concept'},{nm:'SRS Pitch',date:'2025-02-15',score:null,note:''}],docs:['Proposal_IEEE.pdf','SRS_Document.pdf'],feedback:['Approved. Ensure SRS follows IEEE 830.']},
+    {id:2,sId:2,supId:6,status:'pending',phase:'phase1',prog:10,title:'Online Exam Proctoring System',desc:'AI-powered exam proctoring with facial recognition and gaze tracking.',area:'ai',submitted:'2025-02-01',approved:null,fcc:null,fccNote:'',supReqs:[{sid:6,st:'pending'},{sid:7,st:'pending'},{sid:8,st:'pending'}],ms:[{n:'Proposal',d:false,dt:null},{n:'Lit Review',d:false,dt:null},{n:'SRS',d:false,dt:null},{n:'Design',d:false,dt:null},{n:'Impl.',d:false,dt:null},{n:'Testing',d:false,dt:null},{n:'Defense',d:false,dt:null}],grades:{proposal:null,mid:null,final:null,viva:null},pitchings:[],docs:[],feedback:[]},
+    {id:3,sId:3,supId:7,status:'revision',phase:'phase1',prog:35,title:'Digital Library Management System',desc:'Library system for books, members, fines with automated email alerts.',area:'web',submitted:'2025-01-25',approved:null,fcc:null,fccNote:'',supReqs:[{sid:7,st:'accepted'},{sid:6,st:'rejected'},{sid:8,st:'pending'}],ms:[{n:'Proposal',d:true,dt:'2025-01-30'},{n:'Lit Review',d:false,dt:null},{n:'SRS',d:false,dt:null},{n:'Design',d:false,dt:null},{n:'Impl.',d:false,dt:null},{n:'Testing',d:false,dt:null},{n:'Defense',d:false,dt:null}],grades:{proposal:72,mid:null,final:null,viva:null},pitchings:[],docs:['Proposal_v1.pdf'],feedback:['Needs detailed use cases. Add system architecture diagram.']},
+    {id:4,sId:4,supId:8,status:'rejected',phase:'phase1',prog:0,title:'QR Attendance System',desc:'Attendance tracking with QR scanning and admin dashboard.',area:'web',submitted:'2024-12-15',approved:null,fcc:null,fccNote:'',supReqs:[{sid:8,st:'accepted'},{sid:6,st:'rejected'},{sid:7,st:'rejected'}],ms:[{n:'Proposal',d:false,dt:null},{n:'Lit Review',d:false,dt:null},{n:'SRS',d:false,dt:null},{n:'Design',d:false,dt:null},{n:'Impl.',d:false,dt:null},{n:'Testing',d:false,dt:null},{n:'Defense',d:false,dt:null}],grades:{proposal:null,mid:null,final:null,viva:null},pitchings:[],docs:[],feedback:['Student missed Phase 1 attendance — auto-rejected.']},
+    {id:5,sId:5,supId:7,status:'approved',phase:'phase1',prog:45,title:'Healthcare AI Chatbot',desc:'NLP chatbot for symptom checking and appointment booking.',area:'ai',submitted:'2025-01-05',approved:'2025-01-10',fcc:'approved',fccNote:'Strong innovation. Ensure data privacy compliance.',supReqs:[{sid:7,st:'accepted'},{sid:6,st:'pending'},{sid:8,st:'pending'}],ms:[{n:'Proposal',d:true,dt:'2025-01-10'},{n:'Lit Review',d:true,dt:'2025-01-24'},{n:'SRS',d:false,dt:null},{n:'Design',d:false,dt:null},{n:'Impl.',d:false,dt:null},{n:'Testing',d:false,dt:null},{n:'Defense',d:false,dt:null}],grades:{proposal:80,mid:null,final:null,viva:null},pitchings:[{nm:'Idea Pitch',date:'2025-01-15',score:78,note:'Good problem statement'}],docs:['Proposal_IEEE.pdf'],feedback:['Approved.']},
+  ],
+  meetings:[
+    {id:1,projId:1,sId:1,supId:6,date:'2025-02-15',time:'10:00',agenda:'Review design mockups and SRS',status:'confirmed',minutes:''},
+    {id:2,projId:2,sId:2,supId:6,date:'2025-02-18',time:'14:00',agenda:'Discuss system requirements',status:'pending',minutes:''},
+    {id:3,projId:5,sId:5,supId:7,date:'2025-02-20',time:'09:30',agenda:'Literature review discussion',status:'confirmed',minutes:''},
+  ],
+  messages:[
+    {id:1,from:9,to:1,txt:'Sanan, ensure your SRS follows IEEE 830 format. Deadline: Feb 28.',time:'Today 9:15 AM',read:true},
+    {id:2,from:1,to:9,txt:'Thank you Sir, I will submit the SRS before the deadline.',time:'Today 10:02 AM',read:true},
+    {id:3,from:6,to:1,txt:'Great progress! Prepare demo slides for pitching on Feb 25.',time:'Yesterday 3:30 PM',read:false},
+    {id:4,from:9,to:2,txt:'Ali, your proposal is under review. Expect feedback by tomorrow.',time:'Today 11:00 AM',read:false},
+  ],
+  notifications:[
+    {id:1,uid:1,txt:"Your project moved to Phase 2! 🎉",type:'ok',time:'2h ago',read:false},
+    {id:2,uid:1,txt:'Meeting scheduled for Feb 15 at 10:00 AM.',type:'info',time:'5h ago',read:false},
+    {id:3,uid:1,txt:'Milestone reminder: SRS Document due in 3 days (IEEE required).',type:'warn',time:'1d ago',read:true},
+    {id:4,uid:2,txt:'Your proposal is pending supervisor review.',type:'info',time:'3d ago',read:false},
+    {id:5,uid:3,txt:'Dr. Arif requested revisions on your proposal.',type:'warn',time:'2d ago',read:false},
+    {id:6,uid:6,txt:'Meeting request from Ali Hassan for Feb 18.',type:'info',time:'2d ago',read:false},
+    {id:7,uid:6,txt:'3 student supervision requests pending.',type:'warn',time:'1d ago',read:false},
+    {id:8,uid:9,txt:'2 new proposals need coordinator review.',type:'warn',time:'1d ago',read:false},
+    {id:9,uid:9,txt:'Usman Khan missed Phase 1 attendance — project auto-rejected.',type:'err',time:'3d ago',read:true},
+  ],
+  fcc:[
+    {id:1,projId:1,status:'pending',by:1,date:'2025-01-18',note:''},
+    {id:2,projId:5,status:'approved',by:5,date:'2025-01-12',note:'Strong innovation. Ensure data privacy compliance.'},
+  ],
+  srs:[
+    {id:1,projId:1,commId:9,status:'accepted',subDate:'2025-02-10',revDate:'2025-02-12',notes:'SRS approved with minor comments.'},
+  ],
+  ieeeDocs:[
+    {id:1,name:'IEEE 830 SRS Template',type:'template',size:'245 KB',date:'2025-01-01'},
+    {id:2,name:'IEEE Project Proposal Format',type:'template',size:'180 KB',date:'2025-01-01'},
+    {id:3,name:'FYP Guidelines 2024-25',type:'guideline',size:'512 KB',date:'2025-01-01'},
+    {id:4,name:'Design Document (IEEE)',type:'template',size:'320 KB',date:'2025-01-01'},
+    {id:5,name:'Test Plan Template (IEEE 829)',type:'template',size:'210 KB',date:'2025-01-01'},
+    {id:6,name:'Final Report Format (IEEE)',type:'template',size:'280 KB',date:'2025-01-01'},
+  ],
+  nextId:{proj:6,meet:4,msg:5,notif:10,fcc:3}
+};
+
+// Try load saved DB from localStorage
+try{const s=localStorage.getItem('fyp_db');if(s)DB=JSON.parse(s);}catch(e){}
+function saveDB(){try{localStorage.setItem('fyp_db',JSON.stringify(DB));}catch(e){}}
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let CU=null; // current user
+let AP='dashboard'; // active page
+let AR='student'; // active role on login
+let ARR='student'; // active role on register
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+const H={
+  u:id=>DB.users.find(u=>u.id===id),
+  p:id=>DB.projects.find(p=>p.id===id),
+  sp:uid=>DB.projects.find(p=>p.sId===uid),
+  supPs:uid=>DB.projects.filter(p=>p.supId===uid),
+  allPs:()=>DB.projects,
+  uNotifs:uid=>DB.notifications.filter(n=>n.uid===uid),
+  unread:uid=>DB.notifications.filter(n=>n.uid===uid&&!n.read).length,
+  uMsgs:uid=>DB.messages.filter(m=>m.from===uid||m.to===uid),
+  inits:name=>name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2),
+  esc:s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'),
+  fmtDate:d=>d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—',
+  aL:a=>({software:'Software Eng.',ai:'AI / ML',network:'Networking',web:'Web Dev',mobile:'Mobile Dev',data:'Data Science',iot:'IoT'})[a]||a,
+  badge:(st)=>{
+    const m={approved:'b-ok',pending:'b-pend',revision:'b-rev',rejected:'b-rej',confirmed:'b-conf',completed:'b-ok',active:'b-ok',accepted:'b-ok',phase1:'b-ph1',phase2:'b-ph2'};
+    const l={approved:'✓ Approved',pending:'⏳ Pending',revision:'↩ Needs Revision',rejected:'✗ Rejected',confirmed:'✓ Confirmed',completed:'✓ Completed',active:'● Active',accepted:'✓ Accepted',phase1:'Phase 1',phase2:'Phase 2'};
+    return`<span class="badge ${m[st]||'b-pend'}">${l[st]||st}</span>`;
+  },
+  prog:(pct,cls='')=>`<div class="prog-wrap"><div class="prog-fill ${cls}" style="width:${pct}%"></div></div>`,
+  calcGrade:g=>{if(!g||g.proposal==null||g.mid==null||g.final==null)return null;return Math.round(g.proposal*.25+g.mid*.25+g.final*.35+(g.viva||0)*.15);},
+  ltGrade:t=>{if(t==null)return'—';return t>=90?'A+':t>=85?'A':t>=80?'A-':t>=75?'B+':t>=70?'B':t>=65?'B-':t>=60?'C+':t>=55?'C':t>=50?'D':'F';},
+  toast:(msg,type='info')=>{
+    const w=document.getElementById('toast-con');
+    const icons={ok:'✓',err:'✗',warn:'⚠',info:'ℹ'};
+    const d=document.createElement('div');
+    d.className=`toast t-${type}`;
+    d.innerHTML=`<span style="font-size:15px">${icons[type]||'ℹ'}</span><span>${H.esc(msg)}</span>`;
+    w.appendChild(d);setTimeout(()=>d.remove(),4000);
+  },
+  notify:(uid,txt,type='info')=>{
+    DB.notifications.push({id:DB.nextId.notif++,uid,txt,type,time:'Just now',read:false});
+    if(CU&&CU.id===uid)document.getElementById('notif-dot').classList.remove('hidden');
+    saveDB();
+  },
+  creditOk:uid=>{const u=H.u(uid);return u&&u.credits>=80;},
+  msHtml:ms=>{
+    return`<div class="ms-track">${ms.map((m,i)=>{
+      const nd=ms[i+1]?.d;const cls=m.d?'done':(i===ms.findIndex(x=>!x.d)?'cur':'');
+      return`<div class="ms-item">
+        <div class="ms-conn">
+          ${i>0?`<div class="ms-line${m.d?' done':''}"></div>`:''}
+          <div class="ms-dot ${cls}">${m.d?'✓':i+1}</div>
+          ${i<ms.length-1?`<div class="ms-line${m.d&&nd?' done':''}"></div>`:''}
+        </div>
+        <div class="ms-lbl ${cls}">${m.n}${m.dt?`<br><span style="font-size:8.5px;opacity:.7">${H.fmtDate(m.dt)}</span>`:''}</div>
+      </div>`;
+    }).join('')}</div>`;
+  },
+  phaseBar:phase=>{
+    const steps=['idea','phase1','phase2','completed'];
+    const lbs=['Idea Selection','Phase 1','Phase 2','Completed'];
+    const cur=steps.indexOf(phase==='pending'||phase==='revision'?'idea':phase==='approved'?'phase1':phase==='phase2'?'phase2':'idea');
+    return`<div class="phase-bar">${steps.map((s,i)=>`<div class="ps ${i<cur?'done-p':i===cur?'active-p':'lock-p'}">${lbs[i]}</div>`).join('')}</div>`;
+  },
+};
+
+// ═══════════════════════════════════════════════════════════
+// AUTH MODULE
+// ═══════════════════════════════════════════════════════════
+function selectRole(r){
+  AR=r;
+  document.querySelectorAll('#role-tabs .role-tab').forEach((b,i)=>b.classList.toggle('active',['student','supervisor','coordinator'][i]===r));
+  document.getElementById('li-email').value='';document.getElementById('li-pass').value='';
+  document.getElementById('li-email').placeholder=r==='student'?'2021-SE-101 or email':r==='supervisor'?'mohsin@cu.edu.pk':'faraz@cu.edu.pk';
+}
+function selectRegRole(r){
+  ARR=r;
+  document.querySelectorAll('#reg-role-tabs .role-tab').forEach((b,i)=>b.classList.toggle('active',['student','supervisor','coordinator'][i]===r));
+  document.getElementById('rg-sid-wrap').style.display=r==='student'?'':'none';
+  document.getElementById('rg-credits-wrap').style.display=r==='student'?'':'none';
+  document.getElementById('rg-areas-wrap').style.display=r==='supervisor'?'':'none';
+  document.getElementById('rg-desig-wrap').style.display=r!=='student'?'':'none';
+}
+function autofill(){
+  const c={student:['2021-SE-101','student123'],supervisor:['mohsin@cu.edu.pk','super123'],coordinator:['faraz@cu.edu.pk','coord123']};
+  const [e,p]=c[AR]||c.student;
+  document.getElementById('li-email').value=e;document.getElementById('li-pass').value=p;
+}
+function doLogin(){
+  const email=document.getElementById('li-email').value.trim();
+  const pass=document.getElementById('li-pass').value.trim();
+  const err=document.getElementById('li-err');
+  if(!email||!pass){err.style.display='block';err.textContent='Please enter your credentials.';return;}
+  const user=DB.users.find(u=>(u.email===email||u.sId===email)&&u.pass===pass&&u.role===AR);
+  if(!user){err.style.display='block';err.textContent='Invalid credentials. Use auto-fill to try demo accounts.';return;}
+  err.style.display='none';CU=user;
+  document.getElementById('auth-wrap').style.display='none';
+  document.getElementById('app-wrap').style.display='block';
+  initShell();goPage('dashboard');
+}
+function doRegister(){
+  const name=document.getElementById('rg-name').value.trim();
+  const email=document.getElementById('rg-email').value.trim();
+  const pass=document.getElementById('rg-pass').value.trim();
+  const dept=document.getElementById('rg-dept').value.trim();
+  const err=document.getElementById('rg-err');
+  if(!name||!email||!pass){err.style.display='block';err.textContent='Name, email and password are required.';return;}
+  if(DB.users.find(u=>u.email===email)){err.style.display='block';err.textContent='Email already registered. Please login.';return;}
+  const newU={id:DB.users.length+1,name,email,pass,role:ARR,dept:dept||'SE',phone:'—',joined:new Date().toISOString().split('T')[0]};
+  if(ARR==='student'){
+    const sid=document.getElementById('rg-sid').value.trim()||'2025-SE-'+String(DB.users.length+1).padStart(3,'0');
+    const credits=parseInt(document.getElementById('rg-credits').value)||0;
+    Object.assign(newU,{sId:sid,credits,cgpa:'0.0',section:'SA',semester:1,rejections:0,att:{p1:0,proposal:0,mid:0,final:0}});
+  } else if(ARR==='supervisor'){
+    const areas=document.getElementById('rg-areas').value.split(',').map(a=>a.trim()).filter(Boolean);
+    const desig=document.getElementById('rg-desig').value.trim()||'Lecturer';
+    Object.assign(newU,{sId:'FAC-'+String(DB.users.length+1).padStart(3,'0'),desig,areas,maxS:4});
+  } else {
+    const desig=document.getElementById('rg-desig').value.trim()||'FYP Coordinator';
+    Object.assign(newU,{sId:'COORD-'+String(DB.users.length+1).padStart(3,'0'),desig});
+  }
+  DB.users.push(newU);saveDB();
+  err.style.display='none';H.toast('Account created! You can now login.','ok');
+  showLogin();
+}
+function showRegister(){document.getElementById('login-panel').classList.add('hidden');document.getElementById('reg-panel').classList.remove('hidden');}
+function showLogin(){document.getElementById('reg-panel').classList.add('hidden');document.getElementById('login-panel').classList.remove('hidden');}
+function logout(){
+  CU=null;AP='dashboard';
+  document.getElementById('auth-wrap').style.display='flex';
+  document.getElementById('app-wrap').style.display='none';
+  document.getElementById('li-email').value='';document.getElementById('li-pass').value='';
+  selectRole('student');
+}
+
+// ═══════════════════════════════════════════════════════════
+// SHELL MODULE
+// ═══════════════════════════════════════════════════════════
+function initShell(){
+  document.getElementById('sb-av').textContent=H.inits(CU.name);
+  document.getElementById('sb-uname').textContent=CU.name;
+  document.getElementById('sb-urole').textContent=CU.role;
+  document.getElementById('tb-av').textContent=H.inits(CU.name);
+  buildNav();updateNotifDot();
+}
+function buildNav(){
+  const NAVS={
+    student:[
+      {p:'dashboard',l:'Dashboard',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'},
+      {p:'my-project',l:'My FYP Project',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'},
+      {p:'sup-select',l:'Select Supervisors',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'},
+      {p:'fcc-req',l:'FCC Showcase',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>'},
+      {p:'meetings',l:'Meetings',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'},
+      {p:'grades',l:'My Grades',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+      {p:'ieee-docs',l:'IEEE Documents',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
+      {p:'messages',l:'Messages',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'},
+      {p:'notifications',l:'Notifications',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',badge:true},
+      {p:'change-pass',l:'Change Password',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'},
+    ],
+    supervisor:[
+      {p:'dashboard',l:'Dashboard',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'},
+      {p:'projects',l:'Assigned Projects',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'},
+      {p:'sup-requests',l:'Student Requests',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'},
+      {p:'meetings',l:'Meetings',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'},
+      {p:'grades',l:'Grading',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+      {p:'set-pitching',l:'Set Pitching Dates',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'},
+      {p:'ieee-docs',l:'IEEE Documents',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
+      {p:'messages',l:'Messages',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'},
+      {p:'notifications',l:'Notifications',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',badge:true},
+      {p:'change-pass',l:'Change Password',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'},
+    ],
+    coordinator:[
+      {p:'dashboard',l:'Dashboard',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>'},
+      {p:'projects',l:'All Projects',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'},
+      {p:'fcc-panel',l:'FCC Committee Panel',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>'},
+      {p:'assign-sup',l:'Assign Supervisors',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'},
+      {p:'srs-review',l:'SRS Review',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
+      {p:'pitching-mgmt',l:'Pitching Management',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+      {p:'attendance',l:'Attendance Control',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>'},
+      {p:'meetings',l:'Meetings',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'},
+      {p:'students',l:'Students',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>'},
+      {p:'grades',l:'Grades Overview',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+      {p:'ieee-docs',l:'IEEE Documents',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'},
+      {p:'messages',l:'Messages',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'},
+      {p:'reports',l:'Reports',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'},
+      {p:'notifications',l:'Notifications',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',badge:true},
+      {p:'change-pass',l:'Change Password',i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'},
+    ]
+  };
+  const list=NAVS[CU.role]||NAVS.student;
+  const unread=H.unread(CU.id);
+  document.getElementById('sb-nav').innerHTML=list.map(n=>
+    `<button class="nav-btn" data-page="${n.p}" onclick="goPage('${n.p}')">${n.i}<span>${n.l}</span>${n.badge&&unread>0?`<span class="nb-badge">${unread}</span>`:''}</button>`
+  ).join('');
+}
+function updateNotifDot(){const d=document.getElementById('notif-dot');if(d)d.classList.toggle('hidden',H.unread(CU.id)===0);}
+function goPage(p){
+  AP=p;
+  document.querySelectorAll('.nav-btn[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
+  const TITLES={dashboard:'Dashboard','my-project':'My FYP Project',projects:'FYP Projects','sup-select':'Select Supervisors','sup-requests':'Student Supervision Requests','fcc-req':'FCC Showcase Request','fcc-panel':'FCC Committee Panel','assign-sup':'Assign Supervisors','srs-review':'SRS Document Review','pitching-mgmt':'Pitching Management','set-pitching':'Set Pitching Dates',attendance:'Attendance Control',meetings:'Meetings',grades:'Grades & Evaluation','ieee-docs':'IEEE Documents',messages:'Messages',notifications:'Notifications',students:'Students',reports:'Reports','change-pass':'Change Password'};
+  document.getElementById('tb-title').textContent=TITLES[p]||p;
+  renderPage(p);closeSb();
+}
+function toggleSb(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('mob-ov').classList.toggle('show');}
+function closeSb(){if(window.innerWidth<900){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-ov').classList.remove('show');}}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE ROUTER
+// ═══════════════════════════════════════════════════════════
+function renderPage(p){
+  const el=document.getElementById('page-area');
+  const MAP={
+    dashboard:pgDash,'my-project':pgMyProject,projects:pgProjects,'sup-select':pgSupSelect,
+    'sup-requests':pgSupRequests,'fcc-req':pgFccReq,'fcc-panel':pgFccPanel,'assign-sup':pgAssignSup,
+    'srs-review':pgSrsReview,'pitching-mgmt':pgPitchMgmt,'set-pitching':pgSetPitching,
+    attendance:pgAttendance,meetings:pgMeetings,grades:pgGrades,'ieee-docs':pgIeeeDocs,
+    messages:pgMessages,notifications:pgNotifs,students:pgStudents,reports:pgReports,'change-pass':pgChangePass,
+  };
+  const fn=MAP[p];
+  el.innerHTML=fn?fn():`<div class="empty"><div class="ei">🚧</div><h3>Coming Soon</h3></div>`;
+  // Draw charts after HTML insertion
+  if(p==='dashboard')setTimeout(drawDashCharts,50);
+  if(p==='reports')setTimeout(drawReportCharts,50);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: DASHBOARD — student/supervisor/coordinator
+// ═══════════════════════════════════════════════════════════
+function pgDash(){
+  if(CU.role==='student')return dashStudent();
+  if(CU.role==='supervisor')return dashSupervisor();
+  return dashCoordinator();
+}
+
+function dashStudent(){
+  const proj=H.sp(CU.id);const g=proj?proj.grades:{};const total=H.calcGrade(g);
+  const cPct=Math.min(100,Math.round(CU.credits/130*100));
+  const cOk=CU.credits>=80;
+  const sup=proj?H.u(proj.supId):null;
+  const coord=DB.users.find(u=>u.role==='coordinator'&&u.desig==='FYP Coordinator');
+  const dean=DB.users.find(u=>u.desig==='Dean');
+  const meetings=DB.meetings.filter(m=>m.sId===CU.id&&m.status!=='completed');
+  return `
+  <!-- Student Profile Hero (Req: Dashboard must contain student picture, ID, dates, credit hours) -->
+  <div class="prof-hero">
+    <div class="ph-av">${H.inits(CU.name)}</div>
+    <div class="ph-info">
+      <h2>${H.esc(CU.name)}</h2>
+      <p>Roll No: <strong>${CU.sId}</strong> · Semester: <strong>${CU.semester}</strong> · Section: <strong>${CU.section||'SB'}</strong> · CGPA: <strong>${CU.cgpa}</strong></p>
+      <div class="ph-tags">
+        <span class="ptag">📧 ${CU.email}</span>
+        <span class="ptag">📞 ${CU.phone||'—'}</span>
+        ${proj?`<span class="ptag">📅 FYP Start: ${H.fmtDate(proj.submitted)}</span><span class="ptag">🎯 End: May 2025</span>`:''}
+      </div>
+    </div>
+  </div>
+  <!-- Credit Hours Check (Req: System should show completed credit hours, min 80 required) -->
+  <div class="${cOk?'ok-box':'warn-box'}">
+    <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span>${cOk?'✅':'⚠️'} <strong>Credit Hours: ${CU.credits}/130 completed</strong></span><span style="font-weight:700;color:${cOk?'var(--green)':'var(--red)'}">${cOk?'FYP Eligible':'Min 80 Required!'}</span></div>
+    ${H.prog(cPct,cOk?'pf-green':'pf-red')}
+    <div style="font-size:12px;margin-top:5px;color:var(--muted)">${cOk?'You meet the minimum requirement to register for FYP.':'Complete at least 80 credit hours before starting FYP.'}</div>
+  </div>
+  <div class="stats-grid">
+    <div class="sc"><div class="sc-ico ic-n">📋</div><div><div class="sc-v">${proj?'Active':'None'}</div><div class="sc-l">Project Status</div><div class="sc-s">${proj?proj.status:'Not submitted'}</div></div></div>
+    <div class="sc"><div class="sc-ico ic-gr">✅</div><div><div class="sc-v">${proj?proj.ms.filter(m=>m.d).length:0}</div><div class="sc-l">Milestones Done</div><div class="sc-s">of ${proj?proj.ms.length:7}</div></div></div>
+    <div class="sc"><div class="sc-ico ic-g">📅</div><div><div class="sc-v">${meetings.length}</div><div class="sc-l">Upcoming Meetings</div></div></div>
+    <div class="sc"><div class="sc-ico ic-a">🏆</div><div><div class="sc-v">${total!==null?total+'%':'—'}</div><div class="sc-l">Current Grade</div><div class="sc-s">${H.ltGrade(total)}</div></div></div>
+    <div class="sc"><div class="sc-ico ic-b">📊</div><div><div class="sc-v">${proj?proj.prog+'%':'0%'}</div><div class="sc-l">Progress</div></div></div>
+    <div class="sc"><div class="sc-ico ic-r">🎤</div><div><div class="sc-v">${proj?proj.pitchings.length:0}</div><div class="sc-l">Pitchings Done</div></div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <!-- Requirements Progress Chart (Req: Graph showing % of requirements done) -->
+      <div class="card mb-16">
+        <div class="ch"><h3>📊 Requirements Progress</h3><span style="font-size:12px;color:var(--muted)">Dashboard overview</span></div>
+        <div class="cb"><canvas id="reqChart" height="200"></canvas></div>
+      </div>
+      ${proj?`
+      <div class="card mb-16">
+        <div class="ch"><h3>🗺️ FYP Lifecycle</h3>${H.badge(proj.status)}</div>
+        <div class="cb">
+          ${H.phaseBar(proj.phase||proj.status)}
+          ${H.msHtml(proj.ms)}
+        </div>
+      </div>
+      <!-- Pitching Progress (Req: Student can see pitching distribution) -->
+      <div class="card card-last">
+        <div class="ch"><h3>🎤 Pitching Sessions (4 Total)</h3></div>
+        <div class="cb">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            ${[1,2,3,4].map(n=>{
+              const pt=proj.pitchings[n-1];
+              return`<div style="background:${pt?'var(--green-lt)':'var(--bg2)'};border-radius:10px;padding:14px;text-align:center;border:2px solid ${pt?'var(--green)':'var(--border)'}">
+                <div style="font-size:24px;margin-bottom:6px">${pt?'✅':'🔒'}</div>
+                <div style="font-weight:700;font-size:13px;color:${pt?'var(--green)':'var(--muted)'}">Pitching ${n}</div>
+                ${pt?`<div style="font-size:11.5px;margin-top:3px">${H.fmtDate(pt.date)}</div><div style="font-weight:700;color:var(--navy)">${pt.score!==null?pt.score+'/100':'Pending'}</div>`:'<div style="font-size:11.5px;color:var(--muted)">Not scheduled yet</div>'}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>`:`
+      <div class="card card-last"><div class="cb"><div class="empty"><div class="ei">📋</div><h3>No FYP Submitted</h3><p>Submit your proposal to begin your FYP journey</p><button class="btn btn-navy" onclick="goPage('my-project')" style="margin-top:14px">+ Submit Proposal</button></div></div></div>`}
+    </div>
+    <div>
+      <!-- Supervisor Details (Req: Dashboard must contain supervisor details) -->
+      <div class="card mb-16">
+        <div class="ch"><h3>👨‍🏫 Supervisor</h3></div>
+        <div class="cb">
+          ${sup?`<div class="flex-c gap-12 mb-16"><div class="av av-md av-gold">${H.inits(sup.name)}</div><div><div style="font-weight:700">${H.esc(sup.name)}</div><div style="font-size:12px;color:var(--muted)">${sup.desig}</div></div></div>
+          <div class="igrid"><div class="ig-item"><label>ID</label><span>${sup.sId}</span></div><div class="ig-item"><label>Dept</label><span>${sup.dept}</span></div><div class="ig-item"><label>Email</label><span style="font-size:12px">${sup.email}</span></div><div class="ig-item"><label>Phone</label><span>${sup.phone||'—'}</span></div></div>`:
+          `<div class="empty" style="padding:20px"><div class="ei" style="font-size:30px">👨‍🏫</div><p>No supervisor assigned yet</p><button class="btn btn-navy btn-sm" onclick="goPage('sup-select')" style="margin-top:10px">Select Supervisors</button></div>`}
+        </div>
+      </div>
+      <!-- Coordinator & Dean (Req: Info of dean and coordinator on dashboard) -->
+      <div class="card mb-16">
+        <div class="ch"><h3>🏛️ Administration</h3></div>
+        <div class="cb" style="padding:13px">
+          ${[coord,dean].filter(Boolean).map(p=>`<div class="flex-c gap-12" style="padding:10px 0;border-bottom:1px solid var(--border)"><div class="av av-sm av-green">${H.inits(p.name)}</div><div><div style="font-weight:600;font-size:13px">${H.esc(p.name)}</div><div style="font-size:11.5px;color:var(--muted)">${p.desig} · ${p.dept}</div></div></div>`).join('')}
+        </div>
+      </div>
+      <!-- Attendance (Req: Show attendance % to students) -->
+      <div class="card card-last">
+        <div class="ch"><h3>📊 Attendance</h3></div>
+        <div class="cb"><canvas id="attChart" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function dashSupervisor(){
+  const ps=H.supPs(CU.id);
+  const pend=DB.projects.filter(p=>p.supReqs?.some(r=>r.sid===CU.id&&r.st==='pending'));
+  return `
+  <div class="ph"><div><h1>Supervisor Dashboard</h1><p>${H.esc(CU.name)} · ${CU.desig} · ${CU.dept}</p></div></div>
+  <div class="stats-grid">
+    <div class="sc"><div class="sc-ico ic-n">📋</div><div><div class="sc-v">${ps.length}</div><div class="sc-l">Assigned Projects</div><div class="sc-s">Max ${CU.maxS}</div></div></div>
+    <div class="sc"><div class="sc-ico ic-a">⏳</div><div><div class="sc-v">${pend.length}</div><div class="sc-l">Pending Requests</div></div></div>
+    <div class="sc"><div class="sc-ico ic-gr">✅</div><div><div class="sc-v">${ps.filter(p=>['approved','phase2'].includes(p.status)).length}</div><div class="sc-l">Active Projects</div></div></div>
+    <div class="sc"><div class="sc-ico ic-g">📅</div><div><div class="sc-v">${DB.meetings.filter(m=>m.supId===CU.id&&m.status!=='completed').length}</div><div class="sc-l">Meetings</div></div></div>
+  </div>
+  <div class="g11">
+    <div class="card">
+      <div class="ch"><h3>Project Progress Overview</h3></div>
+      <div class="cb"><canvas id="supProjChart" height="220"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3>My Research Areas</h3></div>
+      <div class="cb">
+        ${(CU.areas||[]).map(a=>`<div class="flex-c gap-12" style="padding:9px 0;border-bottom:1px solid var(--border)"><div style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0"></div><span style="font-size:13.5px;font-weight:500">${H.esc(a)}</span></div>`).join('')}
+        <p style="font-size:12px;color:var(--muted);margin-top:11px">Students selecting you will see these areas.</p>
+      </div>
+    </div>
+  </div>
+  <!-- Pending requests panel -->
+  ${pend.length>0?`
+  <div class="card">
+    <div class="ch"><h3>⚡ Pending Student Requests</h3>${H.badge('pending')}</div>
+    <div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Credit Hrs</th><th>Project</th><th>Actions</th></tr></thead><tbody>
+      ${pend.map(p=>{const s=H.u(p.sId);return`<tr>
+        <td><div class="flex-c gap-8"><div class="av av-sm">${H.inits(s.name)}</div><div><div style="font-weight:600">${H.esc(s.name)}</div><div class="text-sm text-muted">${s.sId}</div></div></div></td>
+        <td><strong style="color:${s.credits>=80?'var(--green)':'var(--red)'}">${s.credits}</strong></td>
+        <td class="trunc" style="max-width:180px">${H.esc(p.title)}</td>
+        <td><div class="flex-c gap-8"><button class="btn btn-green btn-sm" onclick="supRespond(${p.id},${CU.id},'accepted')">Accept</button><button class="btn btn-red btn-sm" onclick="supRespond(${p.id},${CU.id},'rejected')">Reject</button></div></td>
+      </tr>`}).join('')}
+    </tbody></table></div>
+  </div>`:''}
+  <div class="card card-last">
+    <div class="ch"><h3>Assigned Projects</h3><button class="btn btn-outline btn-sm" onclick="goPage('projects')">View All</button></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Project</th><th>Phase</th><th>Progress</th><th>Status</th></tr></thead><tbody>
+      ${ps.length===0?'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:26px">No projects assigned</td></tr>':
+        ps.map(p=>{const s=H.u(p.sId);return`<tr style="cursor:pointer" onclick="openProjModal(${p.id})">
+          <td><div class="flex-c gap-8"><div class="av av-sm">${H.inits(s.name)}</div><strong>${H.esc(s.name)}</strong></div></td>
+          <td class="trunc" style="max-width:200px">${H.esc(p.title)}</td>
+          <td>${H.badge(p.phase||'phase1')}</td>
+          <td style="min-width:110px">${H.prog(p.prog)}<span class="text-sm text-muted">${p.prog}%</span></td>
+          <td>${H.badge(p.status)}</td>
+        </tr>`}).join('')}
+    </tbody></table></div>
+  </div>`;
+}
+
+function dashCoordinator(){
+  const total=DB.projects.length;
+  const pend=DB.projects.filter(p=>p.status==='pending').length;
+  const appr=DB.projects.filter(p=>['approved','phase2'].includes(p.status)).length;
+  const rev=DB.projects.filter(p=>p.status==='revision').length;
+  const stu=DB.users.filter(u=>u.role==='student').length;
+  const sup=DB.users.filter(u=>u.role==='supervisor').length;
+  return `
+  <div class="ph"><div><h1>Coordinator Dashboard</h1><p>${H.esc(CU.name)} · ${CU.desig} · ${CU.dept}</p></div></div>
+  <div class="stats-grid">
+    <div class="sc"><div class="sc-ico ic-n">📋</div><div><div class="sc-v">${total}</div><div class="sc-l">Total Projects</div></div></div>
+    <div class="sc"><div class="sc-ico ic-a">⏳</div><div><div class="sc-v">${pend}</div><div class="sc-l">Pending Review</div></div></div>
+    <div class="sc"><div class="sc-ico ic-gr">✅</div><div><div class="sc-v">${appr}</div><div class="sc-l">Active Projects</div></div></div>
+    <div class="sc"><div class="sc-ico ic-r">↩</div><div><div class="sc-v">${rev}</div><div class="sc-l">Needs Revision</div></div></div>
+    <div class="sc"><div class="sc-ico ic-b">👩‍🎓</div><div><div class="sc-v">${stu}</div><div class="sc-l">Students</div></div></div>
+    <div class="sc"><div class="sc-ico ic-g">👨‍🏫</div><div><div class="sc-v">${sup}</div><div class="sc-l">Supervisors</div></div></div>
+  </div>
+  <div class="g11">
+    <div class="card">
+      <div class="ch"><h3>Project Status Chart</h3></div>
+      <div class="cb"><canvas id="coordPieChart" height="220"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3>Quick Actions</h3></div>
+      <div class="cb" style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-navy btn-sm" style="justify-content:flex-start" onclick="goPage('fcc-panel')">🏆 Review FCC Requests</button>
+        <button class="btn btn-grey btn-sm" style="justify-content:flex-start" onclick="goPage('projects')">📋 Review Proposals</button>
+        <button class="btn btn-grey btn-sm" style="justify-content:flex-start" onclick="goPage('assign-sup')">👨‍🏫 Assign Supervisors</button>
+        <button class="btn btn-grey btn-sm" style="justify-content:flex-start" onclick="goPage('srs-review')">📄 Review SRS</button>
+        <button class="btn btn-grey btn-sm" style="justify-content:flex-start" onclick="goPage('attendance')">📊 Attendance Control</button>
+        <button class="btn btn-grey btn-sm" style="justify-content:flex-start" onclick="goPage('pitching-mgmt')">🎤 Pitching Sessions</button>
+        <button class="btn btn-gold btn-sm" style="justify-content:flex-start" onclick="goPage('reports')">📊 Generate Report</button>
+      </div>
+    </div>
+  </div>
+  <div class="card card-last">
+    <div class="ch"><h3>Supervisor Workload</h3></div>
+    <div class="cb"><canvas id="supWorkChart" height="180"></canvas></div>
+  </div>`;
+}
+
+function drawDashCharts(){
+  // Requirements progress chart (student)
+  const rc=document.getElementById('reqChart');
+  if(rc){
+    const proj=H.sp(CU.id);
+    new Chart(rc,{type:'bar',data:{labels:['Phase 1 Att.','Proposal','SRS Done','Design','Impl.','Testing'],datasets:[{label:'Completion %',data:[CU.att?CU.att.p1:0,proj?100:0,proj&&proj.ms[2].d?100:0,proj&&proj.ms[3].d?100:0,proj&&proj.ms[4].d?100:0,proj&&proj.ms[5].d?100:0],backgroundColor:['rgba(26,58,92,.8)','rgba(200,168,75,.8)','rgba(27,107,58,.8)','rgba(26,58,92,.6)','rgba(200,168,75,.6)','rgba(27,107,58,.6)'],borderRadius:7}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}}}});
+  }
+  // Attendance chart (student)
+  const ac=document.getElementById('attChart');
+  if(ac&&CU.att){
+    new Chart(ac,{type:'radar',data:{labels:['Phase 1','Proposal','Mid-Term','Final'],datasets:[{label:'Attendance %',data:[CU.att.p1,CU.att.proposal,CU.att.mid,CU.att.final],backgroundColor:'rgba(26,58,92,.15)',borderColor:'var(--navy)',pointBackgroundColor:'var(--gold)',pointBorderColor:'var(--gold)'}]},options:{responsive:true,scales:{r:{beginAtZero:true,max:100}}}});
+  }
+  // Supervisor project progress chart
+  const sc=document.getElementById('supProjChart');
+  if(sc&&CU.role==='supervisor'){
+    const ps=H.supPs(CU.id);
+    new Chart(sc,{type:'bar',data:{labels:ps.map(p=>p.title.slice(0,20)+'…'),datasets:[{label:'Progress %',data:ps.map(p=>p.prog),backgroundColor:'rgba(26,58,92,.75)',borderRadius:7}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,max:100}}}});
+  }
+  // Coordinator pie chart
+  const cp=document.getElementById('coordPieChart');
+  if(cp){
+    const ps=DB.projects;
+    new Chart(cp,{type:'doughnut',data:{labels:['Approved','Pending','Revision','Rejected','Phase 2'],datasets:[{data:[ps.filter(p=>p.status==='approved').length,ps.filter(p=>p.status==='pending').length,ps.filter(p=>p.status==='revision').length,ps.filter(p=>p.status==='rejected').length,ps.filter(p=>p.status==='phase2').length],backgroundColor:['#1b6b3a','#7a4f00','#8b1a1a','#6b7280','#1a3a5c'],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+  }
+  // Supervisor workload chart
+  const sw=document.getElementById('supWorkChart');
+  if(sw){
+    const sups=DB.users.filter(u=>u.role==='supervisor');
+    new Chart(sw,{type:'bar',data:{labels:sups.map(s=>s.name),datasets:[{label:'Assigned',data:sups.map(s=>DB.projects.filter(p=>p.supId===s.id).length),backgroundColor:'rgba(26,58,92,.75)',borderRadius:7},{label:'Max',data:sups.map(s=>s.maxS||4),backgroundColor:'rgba(200,168,75,.4)',borderRadius:7}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}});
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: MY PROJECT (Student)
+// ═══════════════════════════════════════════════════════════
+function pgMyProject(){
+  const proj=H.sp(CU.id);
+  if(!proj)return`
+    <div class="ph"><div><h1>My FYP Project</h1><p>7th Semester Final Year Project</p></div></div>
+    ${!H.creditOk(CU.id)?`<div class="warn-box">⚠️ <strong>Not Eligible:</strong> You have ${CU.credits} credit hours. Minimum 80 required for FYP.</div>`:''}
+    <div class="card"><div class="cb"><div class="empty"><div class="ei">📋</div><h3>No Project Submitted</h3><p>Submit your FYP proposal to begin. Documentation must follow IEEE format.</p>
+      <button class="btn btn-navy" onclick="openSubmitModal()" style="margin-top:14px" ${H.creditOk(CU.id)?'':'disabled'}>+ Submit FYP Proposal</button>
+    </div></div></div>`;
+  const sup=H.u(proj.supId);const g=proj.grades;const total=H.calcGrade(g);
+  return`
+  <div class="ph">
+    <div><h1>${H.esc(proj.title)}</h1><p>Phase: ${proj.phase==='phase2'?'Phase 2':'Phase 1'} · Area: ${H.areaLabel(proj.area)}</p></div>
+    <div class="ph-acts">
+      <button class="btn btn-grey btn-sm" onclick="openProgressModal(${proj.id})">📊 Update Progress</button>
+      <button class="btn btn-navy btn-sm" onclick="goPage('meetings')">📅 Request Meeting</button>
+    </div>
+  </div>
+  ${H.phaseBar(proj.phase||proj.status)}
+  <div class="g2">
+    <div>
+      <div class="card mb-16">
+        <div class="ch">
+          <div><div class="flex-c gap-8 mb-8">${H.badge(proj.status)}<span class="badge b-gold">${H.areaLabel(proj.area)}</span></div><h3>${H.esc(proj.title)}</h3></div>
+          ${proj.status==='pending'?`<button class="btn btn-grey btn-sm" onclick="openSubmitModal(true)">Edit</button>`:''}
+        </div>
+        <div class="cb">
+          <p style="font-size:13.5px;color:var(--text);line-height:1.7;margin-bottom:16px">${H.esc(proj.desc)}</p>
+          <div class="igrid mb-16">
+            <div class="ig-item"><label>Supervisor</label><span>${sup?H.esc(sup.name):'—'}</span></div>
+            <div class="ig-item"><label>Area</label><span>${H.areaLabel(proj.area)}</span></div>
+            <div class="ig-item"><label>Submitted</label><span>${H.fmtDate(proj.submitted)}</span></div>
+            <div class="ig-item"><label>Approved</label><span>${proj.approved?H.fmtDate(proj.approved):'Pending'}</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-weight:600;font-size:13px">Overall Progress</span><span style="font-weight:700;color:var(--navy)">${proj.prog}%</span></div>
+          ${H.prog(proj.prog)}
+          ${proj.feedback.length>0?`<div class="warn-box" style="margin-top:14px"><strong>📝 Feedback:</strong>${proj.feedback.map(f=>`<div style="margin-top:5px;padding-left:11px;border-left:3px solid var(--gold)">• ${H.esc(f)}</div>`).join('')}</div>`:''}
+          ${proj.fcc?`<div class="ok-box" style="margin-top:10px"><strong>🏆 FCC Status:</strong> ${proj.fcc} — ${H.esc(proj.fccNote)}</div>`:''}
+        </div>
+      </div>
+      <!-- Milestones -->
+      <div class="card mb-16">
+        <div class="ch"><h3>Milestone Tracker</h3><span class="text-sm text-muted">${proj.ms.filter(m=>m.d).length}/${proj.ms.length} done</span></div>
+        <div class="cb">
+          ${H.msHtml(proj.ms)}
+          <table style="margin-top:16px"><thead><tr><th>#</th><th>Milestone</th><th>Status</th><th>Date</th></tr></thead><tbody>
+            ${proj.ms.map((m,i)=>`<tr><td>${i+1}</td><td style="font-weight:500">${m.n}</td><td>${m.d?'<span class="badge b-ok">✓ Done</span>':'<span class="badge b-pend">Pending</span>'}</td><td>${H.fmtDate(m.dt)}</td></tr>`).join('')}
+          </tbody></table>
+        </div>
+      </div>
+      <!-- Pitching Sessions -->
+      <div class="card mb-16">
+        <div class="ch"><h3>🎤 Pitching Sessions</h3><span class="text-sm text-muted">${proj.pitchings.filter(p=>p.score!==null).length}/4 completed</span></div>
+        <div class="cb">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            ${[1,2,3,4].map(n=>{const pt=proj.pitchings[n-1];return`<div style="background:${pt?'var(--green-lt)':'var(--bg2)'};border-radius:10px;padding:14px;text-align:center;border:2px solid ${pt?'var(--green)':'var(--border)'}">
+              <div style="font-size:22px;margin-bottom:5px">${pt?'✅':'🔒'}</div>
+              <div style="font-weight:700;font-size:13px;color:${pt?'var(--green)':'var(--muted)'}">Pitching ${n}</div>
+              ${pt?`<div style="font-size:11.5px;color:var(--muted)">${H.fmtDate(pt.date)}</div><div style="font-weight:700;font-size:15px;color:var(--navy)">${pt.score!==null?pt.score+'/100':'Pending'}</div>${pt.note?`<div style="font-size:11px;color:var(--muted)">${H.esc(pt.note)}</div>`:''}`:'<div style="font-size:11.5px;color:var(--muted)">Not scheduled</div>'}
+            </div>`;}).join('')}
+          </div>
+          <div class="info-box" style="margin-top:13px">ℹ️ Pitching dates and distribution are set by your Supervisor or FYP Coordinator.</div>
+        </div>
+      </div>
+      <!-- Documents -->
+      <div class="card card-last">
+        <div class="ch"><h3>📄 My Documents</h3><button class="btn btn-navy btn-sm" onclick="openUploadDocModal(${proj.id})">+ Upload</button></div>
+        <div class="cb" style="padding:13px">
+          ${proj.docs.length===0?'<div style="text-align:center;color:var(--muted);padding:16px;font-size:13px">No documents uploaded yet</div>':
+            proj.docs.map(d=>`<div class="flex-c gap-12" style="padding:10px;background:var(--bg);border-radius:9px;margin-bottom:8px"><span style="font-size:20px">📄</span><div style="flex:1"><div style="font-weight:600;font-size:13px">${H.esc(d)}</div><div class="text-sm text-muted">IEEE Format</div></div><button class="btn btn-grey btn-sm" onclick="H.toast('Download started (prototype)','ok')">⬇</button></div>`).join('')}
+          <div class="info-box" style="margin-top:10px;font-size:12px">All documents must follow IEEE format. Templates: <a onclick="goPage('ieee-docs')" style="color:var(--navy);cursor:pointer;font-weight:600">IEEE Documents</a></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <!-- Grades -->
+      <div class="card mb-16">
+        <div class="ch"><h3>🏆 My Grades</h3></div>
+        <div class="cb">
+          <div style="text-align:center;margin-bottom:14px">
+            <div style="font-family:'Playfair Display',serif;font-size:58px;font-weight:800;color:${total&&total>=60?'var(--green)':'var(--light)'};line-height:1">${H.ltGrade(total)}</div>
+            <div style="font-size:20px;color:var(--muted)">${total!==null?total+'%':'Pending'}</div>
+          </div>
+          <div class="div-line"></div>
+          ${[['Proposal','proposal',25],['Mid-Term','mid',25],['Final','final',35],['Viva','viva',15]].map(([l,k,w])=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-weight:600;font-size:13px">${l}</div><div class="text-sm text-muted">${w}% weight</div></div>
+            <div style="font-size:17px;font-weight:700;color:${g[k]!=null?(g[k]>=60?'var(--green)':'var(--red)'):'var(--light)'}">${g[k]!=null?g[k]+'/100':'—'}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <!-- Attendance card -->
+      <div class="card mb-16">
+        <div class="ch"><h3>📊 Attendance</h3></div>
+        <div class="cb">
+          <div class="warn-box" style="font-size:12px">⚠️ Missing mandatory phase attendance auto-rejects your project.</div>
+          ${[['Phase 1',CU.att.p1],['Proposal Defence',CU.att.proposal],['Mid-Term',CU.att.mid]].map(([l,pct])=>`
+          <div style="margin-bottom:13px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px"><span style="font-weight:500">${l}</span><span style="font-weight:700;color:${pct>=75?'var(--green)':pct>0?'var(--amber)':'var(--red)'}">${pct}% ${pct===0?'⚠ ABSENT':pct<75?'⚠ LOW':''}</span></div>
+            ${H.prog(pct,pct>=75?'pf-green':pct>0?'pf-gold':'pf-red')}
+          </div>`).join('')}
+        </div>
+      </div>
+      <!-- FCC -->
+      <div class="card card-last">
+        <div class="ch"><h3>🏆 FCC Showcase</h3></div>
+        <div class="cb">
+          ${proj.fcc?`${H.badge(proj.fcc)}<p style="font-size:13px;margin-top:10px">${H.esc(proj.fccNote)}</p>`:`<div class="empty" style="padding:16px"><div class="ei" style="font-size:28px">🏆</div><p>Request FCC showcase</p><button class="btn btn-gold btn-sm" onclick="goPage('fcc-req')" style="margin-top:10px">Request Showcase</button></div>`}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: SUPERVISOR SELECTION (Student — must select 3)
+// ═══════════════════════════════════════════════════════════
+function pgSupSelect(){
+  const proj=H.sp(CU.id);
+  const sups=DB.users.filter(u=>u.role==='supervisor');
+  const sel=proj?proj.supReqs:[];
+  return`
+  <div class="ph"><div><h1>Select Supervisors</h1><p>Select exactly 3 supervisors. They can accept or reject. Max 3 rejections allowed.</p></div></div>
+  <div class="info-box">ℹ️ <strong>Process:</strong> Select 3 supervisors → They respond → Coordinator may assign if needed. Supervisors list their research areas below.</div>
+  ${CU.rejections>0?`<div class="warn-box">⚠️ You have been rejected <strong>${CU.rejections} time(s)</strong>. Maximum allowed: 3.</div>`:''}
+  ${CU.rejections>=3?`<div class="warn-box" style="background:var(--red-lt);border-color:var(--red)">🚫 <strong>Max rejections reached.</strong> Contact the FYP Coordinator for supervisor assignment.</div>`:''}
+  <div class="card card-last">
+    <div class="ch"><h3>Available Supervisors</h3><span class="text-sm text-muted">${sel.length}/3 selected</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Supervisor</th><th>Areas</th><th>Dept</th><th>Slots</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      ${sups.map((s,i)=>{
+        const req=sel.find(r=>r.sid===s.id);
+        const assigned=DB.projects.filter(p=>p.supId===s.id).length;
+        const slots=(s.maxS||4)-assigned;
+        return`<tr>
+          <td>${i+1}</td>
+          <td><div class="flex-c gap-8"><div class="av av-sm av-gold">${H.inits(s.name)}</div><div><div style="font-weight:600">${H.esc(s.name)}</div><div class="text-sm text-muted">${s.desig}</div></div></div></td>
+          <td><div style="font-size:12.5px">${(s.areas||[]).join(', ')}</div></td>
+          <td>${s.dept}</td>
+          <td><strong style="color:${slots>0?'var(--green)':'var(--red)'}">${slots}/${s.maxS||4}</strong></td>
+          <td>${req?H.badge(req.st):'<span class="badge b-conf">Not Requested</span>'}</td>
+          <td>${req?(req.st==='pending'?'<span class="text-muted text-sm">Awaiting…</span>':req.st==='accepted'?'<span style="font-size:12px;color:var(--green);font-weight:600">✓ Accepted</span>':'<span style="font-size:12px;color:var(--red)">✗ Rejected</span>'):
+            `<button class="btn btn-navy btn-sm" ${sel.length>=3||slots<=0||CU.rejections>=3?'disabled':''} onclick="reqSupervisor(${s.id})">Send Request</button>`}</td>
+        </tr>`;
+      }).join('')}
+    </tbody></table></div>
+  </div>`;
+}
+
+function reqSupervisor(supId){
+  const proj=H.sp(CU.id);if(!proj){H.toast('Submit your project proposal first.','err');return;}
+  if(proj.supReqs.some(r=>r.sid===supId)){H.toast('Already sent to this supervisor.','warn');return;}
+  if(proj.supReqs.length>=3){H.toast('You can only select 3 supervisors.','warn');return;}
+  proj.supReqs.push({sid:supId,st:'pending'});
+  H.notify(supId,`${CU.name} sent you a supervision request for "${proj.title}".`,'info');
+  H.toast('Request sent!','ok');saveDB();renderPage('sup-select');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: SUPERVISOR REQUESTS (Supervisor)
+// ═══════════════════════════════════════════════════════════
+function pgSupRequests(){
+  const myPs=DB.projects.filter(p=>p.supReqs?.some(r=>r.sid===CU.id));
+  const pend=myPs.filter(p=>p.supReqs.find(r=>r.sid===CU.id&&r.st==='pending'));
+  const acc=myPs.filter(p=>p.supReqs.find(r=>r.sid===CU.id&&r.st==='accepted'));
+  const rej=myPs.filter(p=>p.supReqs.find(r=>r.sid===CU.id&&r.st==='rejected'));
+  const mkList=(list,showBtns)=>`<div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Credits</th><th>CGPA</th><th>Project</th><th>Area</th><th>Submitted</th>${showBtns?'<th>Actions</th>':''}</tr></thead><tbody>
+    ${list.length===0?`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">None</td></tr>`:
+      list.map(p=>{const s=H.u(p.sId);return`<tr>
+        <td><div class="flex-c gap-8"><div class="av av-sm">${H.inits(s.name)}</div><div><div style="font-weight:600">${H.esc(s.name)}</div><div class="text-sm text-muted">${s.sId}</div></div></div></td>
+        <td><strong style="color:${s.credits>=80?'var(--green)':'var(--red)'}">${s.credits}</strong></td>
+        <td>${s.cgpa}</td>
+        <td class="trunc" style="max-width:160px">${H.esc(p.title)}</td>
+        <td><span class="badge b-gold">${H.areaLabel(p.area)}</span></td>
+        <td>${H.fmtDate(p.submitted)}</td>
+        ${showBtns?`<td><div class="flex-c gap-8"><button class="btn btn-green btn-sm" onclick="supRespond(${p.id},${CU.id},'accepted')">Accept</button><button class="btn btn-red btn-sm" onclick="supRespond(${p.id},${CU.id},'rejected')">Reject</button></div></td>`:''}</tr>`;}).join('')}
+  </tbody></table></div>`;
+  return`
+  <div class="ph"><div><h1>Student Supervision Requests</h1><p>Review and respond. Students can be rejected max 3 times.</p></div></div>
+  <div class="stats-grid">
+    <div class="sc"><div class="sc-ico ic-a">⏳</div><div><div class="sc-v">${pend.length}</div><div class="sc-l">Pending</div></div></div>
+    <div class="sc"><div class="sc-ico ic-gr">✅</div><div><div class="sc-v">${acc.length}</div><div class="sc-l">Accepted</div></div></div>
+    <div class="sc"><div class="sc-ico ic-r">✗</div><div><div class="sc-v">${rej.length}</div><div class="sc-l">Rejected</div></div></div>
+    <div class="sc"><div class="sc-ico ic-n">📊</div><div><div class="sc-v">${acc.length}/${CU.maxS||4}</div><div class="sc-l">Slots Used</div></div></div>
+  </div>
+  <div class="info-box">ℹ️ Students can be rejected a maximum of 3 times in total. Please be fair in your decisions.</div>
+  <div class="tabs">
+    <button class="tab active" onclick="swTab(this,'sr-p')">Pending (${pend.length})</button>
+    <button class="tab" onclick="swTab(this,'sr-a')">Accepted (${acc.length})</button>
+    <button class="tab" onclick="swTab(this,'sr-r')">Rejected (${rej.length})</button>
+  </div>
+  <div class="card card-last">
+    <div id="sr-p">${mkList(pend,true)}</div>
+    <div id="sr-a" class="hidden">${mkList(acc,false)}</div>
+    <div id="sr-r" class="hidden">${mkList(rej,false)}</div>
+  </div>`;
+}
+
+function supRespond(projId,supId,action){
+  const proj=H.p(projId);if(!proj)return;
+  const req=proj.supReqs.find(r=>r.sid===supId);if(!req)return;
+  req.st=action;
+  const stu=H.u(proj.sId);const sup=H.u(supId);
+  if(action==='rejected'){stu.rejections=(stu.rejections||0)+1;
+    if(stu.rejections>=3)H.notify(stu.id,'⚠️ 3 rejections reached. Contact FYP Coordinator.','warn');}
+  if(action==='accepted')proj.supId=supId;
+  H.notify(proj.sId,`${sup.name} ${action} your supervision request for "${proj.title}".`,action==='accepted'?'ok':'warn');
+  H.toast(`Request ${action}!`,action==='accepted'?'ok':'info');saveDB();renderPage(AP);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: FCC SHOWCASE REQUEST (Student)
+// ═══════════════════════════════════════════════════════════
+function pgFccReq(){
+  const proj=H.sp(CU.id);
+  const ex=proj?DB.fcc.find(r=>r.projId===proj.id):null;
+  return`
+  <div class="ph"><div><h1>FCC Showcase Request</h1><p>Request the Final Committee (FCC) to include your project in the showcase event.</p></div></div>
+  <div class="info-box">ℹ️ <strong>FCC Process:</strong> Submit → FCC reviews → Accept/Reject with comments → FCC may add improvements even if accepted.</div>
+  ${ex?`
+  <div class="card card-last">
+    <div class="ch"><h3>Showcase Request Status</h3>${H.badge(ex.status)}</div>
+    <div class="cb">
+      <div class="igrid mb-16">
+        <div class="ig-item"><label>Project</label><span>${proj?H.esc(proj.title):'—'}</span></div>
+        <div class="ig-item"><label>Submitted</label><span>${H.fmtDate(ex.date)}</span></div>
+        <div class="ig-item"><label>Status</label><span style="text-transform:capitalize;font-weight:600">${ex.status}</span></div>
+      </div>
+      ${proj&&proj.fccNote?`<div class="${ex.status==='approved'?'ok-box':'warn-box'}">💬 <strong>FCC Comment:</strong> "${H.esc(proj.fccNote)}"</div>`:''}
+    </div>
+  </div>`:
+  proj?`
+  <div class="card card-last">
+    <div class="ch"><h3>Submit FCC Request</h3></div>
+    <div class="cb">
+      <div class="fg"><label>Project Title</label><input value="${H.esc(proj.title)}" readonly style="background:var(--bg2)"/></div>
+      <div class="fg"><label>Summary for FCC (IEEE format recommended) <span class="req">*</span></label>
+        <textarea id="fcc-sum" rows="4" placeholder="Describe innovation, impact, current status for the FCC committee..."></textarea></div>
+      <div class="fg"><label>Milestone Progress</label>
+        <input value="${proj.ms.filter(m=>m.d).length}/${proj.ms.length} milestones done (${proj.prog}%)" readonly style="background:var(--bg2)"/></div>
+      <button class="btn btn-gold btn-lg" onclick="submitFccReq(${proj.id})">🏆 Submit FCC Request</button>
+    </div>
+  </div>`:
+  `<div class="card"><div class="cb"><div class="empty"><div class="ei">📋</div><h3>No Project Found</h3><p>You need an approved project before requesting FCC showcase.</p></div></div></div>`}`;
+}
+
+function submitFccReq(projId){
+  const sum=document.getElementById('fcc-sum').value.trim();
+  if(!sum){H.toast('Please write a summary.','err');return;}
+  DB.fcc.push({id:DB.nextId.fcc++,projId,status:'pending',by:CU.id,date:new Date().toISOString().split('T')[0],note:''});
+  H.notify(9,'New FCC request by '+CU.name,'info');H.toast('FCC request submitted!','ok');saveDB();renderPage('fcc-req');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: FCC PANEL (Coordinator)
+// ═══════════════════════════════════════════════════════════
+function pgFccPanel(){
+  return`
+  <div class="ph"><div><h1>FCC Committee Panel</h1><p>Review and manage Final Committee showcase requests. You can add improvement notes even when approving.</p></div></div>
+  <div class="card card-last">
+    <div class="ch"><h3>Showcase Requests</h3><span class="badge b-pend">${DB.fcc.filter(r=>r.status==='pending').length} pending</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Project</th><th>Submitted</th><th>Status</th><th>FCC Note</th><th>Action</th></tr></thead><tbody>
+      ${DB.fcc.length===0?'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:22px">No requests</td></tr>':
+        DB.fcc.map(r=>{const proj=H.p(r.projId);const stu=proj?H.u(proj.sId):null;return`<tr>
+          <td>${stu?`<div class="flex-c gap-8"><div class="av av-sm">${H.inits(stu.name)}</div><strong>${H.esc(stu.name)}</strong></div>`:'—'}</td>
+          <td class="trunc" style="max-width:180px">${proj?H.esc(proj.title):'—'}</td>
+          <td>${H.fmtDate(r.date)}</td>
+          <td>${H.badge(r.status)}</td>
+          <td class="text-sm text-muted" style="max-width:160px">${r.note||'—'}</td>
+          <td><button class="btn btn-grey btn-sm" onclick="openFccReview(${r.id})">📝 Review</button></td>
+        </tr>`}).join('')}
+    </tbody></table></div>
+  </div>`;
+}
+
+function openFccReview(reqId){
+  const req=DB.fcc.find(r=>r.id===reqId);const proj=req?H.p(req.projId):null;if(!proj)return;
+  openModal(`FCC Review — ${H.esc(proj.title)}`,`
+    <div class="fg"><label>Project</label><input value="${H.esc(proj.title)}" readonly style="background:var(--bg2)"/></div>
+    <div class="fg"><label>Description / Comments / Improvements <span class="req">*</span></label>
+      <textarea id="fcc-note" rows="4" placeholder="Add feedback, improvements, or rejection reason...">${H.esc(req.note)}</textarea></div>
+  `,`<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="fccAction(${reqId},'rejected')">✗ Reject</button><button class="btn btn-green" onclick="fccAction(${reqId},'approved')">✓ Accept</button>`);
+}
+
+function fccAction(reqId,action){
+  const req=DB.fcc.find(r=>r.id===reqId);if(!req)return;
+  req.status=action;req.note=document.getElementById('fcc-note').value.trim();
+  const proj=H.p(req.projId);
+  if(proj){proj.fcc=action;proj.fccNote=req.note;}
+  H.notify(req.by,`FCC ${action} your request. ${req.note?'Note: '+req.note:''}`,action==='approved'?'ok':'warn');
+  closeModal();H.toast('FCC decision saved!','ok');saveDB();renderPage('fcc-panel');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: ASSIGN SUPERVISOR (Coordinator)
+// ═══════════════════════════════════════════════════════════
+function pgAssignSup(){
+  const sups=DB.users.filter(u=>u.role==='supervisor');
+  return`
+  <div class="ph"><div><h1>Assign Supervisors</h1><p>Coordinator can assign a supervisor to a student among their selected ones or directly.</p></div></div>
+  <div class="card card-last">
+    <div class="ch"><h3>All Projects — Supervisor Assignment</h3></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Project</th><th>Status</th><th>Selected Supervisors</th><th>Assigned</th><th>Action</th></tr></thead><tbody>
+      ${DB.projects.map(p=>{
+        const stu=H.u(p.sId);const cur=H.u(p.supId);
+        return`<tr>
+          <td><div class="flex-c gap-8"><div class="av av-sm">${H.inits(stu.name)}</div><div><div style="font-weight:600">${H.esc(stu.name)}</div><div class="text-sm text-muted">${stu.sId}</div></div></div></td>
+          <td class="trunc" style="max-width:150px">${H.esc(p.title)}</td>
+          <td>${H.badge(p.status)}</td>
+          <td>${p.supReqs.map(r=>{const s=H.u(r.sid);return s?`<div class="text-sm">${H.esc(s.name)}: ${H.badge(r.st)}</div>`:''}).join('')}</td>
+          <td>${cur?H.esc(cur.name):'<span class="text-muted text-sm">Not assigned</span>'}</td>
+          <td>
+            <select id="as-${p.id}" style="border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit;margin-bottom:5px">
+              <option value="">— Select Supervisor —</option>
+              ${sups.map(s=>`<option value="${s.id}"${p.supId===s.id?' selected':''}>${H.esc(s.name)}</option>`).join('')}
+            </select><br>
+            <button class="btn btn-navy btn-sm" onclick="assignSup(${p.id})">Assign</button>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody></table></div>
+  </div>`;
+}
+
+function assignSup(projId){
+  const sel=document.getElementById('as-'+projId);const supId=parseInt(sel.value);
+  if(!supId){H.toast('Select a supervisor first.','err');return;}
+  const proj=H.p(projId);proj.supId=supId;
+  const ex=proj.supReqs.find(r=>r.sid===supId);
+  if(ex)ex.st='accepted';else proj.supReqs.push({sid:supId,st:'accepted'});
+  H.notify(proj.sId,`Coordinator assigned ${H.u(supId).name} as your supervisor.`,'ok');
+  H.toast('Supervisor assigned!','ok');saveDB();renderPage('assign-sup');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: SRS REVIEW (Coordinator)
+// ═══════════════════════════════════════════════════════════
+function pgSrsReview(){
+  return`
+  <div class="ph"><div><h1>SRS Document Review</h1><p>Review SRS documents and send to committee for approval.</p></div></div>
+  <div class="card mb-18">
+    <div class="ch"><h3>Submitted SRS Documents</h3></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Project</th><th>Submitted</th><th>Committee</th><th>Status</th><th>Notes</th><th>Action</th></tr></thead><tbody>
+      ${DB.srs.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">No SRS submissions</td></tr>':
+        DB.srs.map(s=>{const proj=H.p(s.projId);const stu=proj?H.u(proj.sId):null;const comm=H.u(s.commId);return`<tr>
+          <td>${stu?H.esc(stu.name):'—'}</td>
+          <td class="trunc" style="max-width:160px">${proj?H.esc(proj.title):'—'}</td>
+          <td>${H.fmtDate(s.subDate)}</td>
+          <td>${comm?H.esc(comm.name):'—'}</td>
+          <td>${H.badge(s.status)}</td>
+          <td class="text-sm text-muted">${s.notes||'—'}</td>
+          <td><button class="btn btn-grey btn-sm" onclick="openSrsModal(${s.id})">Review</button></td>
+        </tr>`}).join('')}
+    </tbody></table></div>
+  </div>
+  <div class="card card-last">
+    <div class="ch"><h3>Send SRS to Committee</h3></div>
+    <div class="cb">
+      <div class="frow">
+        <div class="fg"><label>Select Project</label><select id="srs-proj">${DB.projects.map(p=>`<option value="${p.id}">${H.esc(p.title)}</option>`).join('')}</select></div>
+        <div class="fg"><label>Select Committee Member</label><select id="srs-comm">${DB.users.filter(u=>u.role==='supervisor'||u.role==='coordinator').map(u=>`<option value="${u.id}">${H.esc(u.name)} (${u.desig||u.role})</option>`).join('')}</select></div>
+      </div>
+      <button class="btn btn-navy" onclick="sendSrs()">📤 Send to Committee</button>
+    </div>
+  </div>`;
+}
+
+function sendSrs(){
+  const projId=parseInt(document.getElementById('srs-proj').value);const commId=parseInt(document.getElementById('srs-comm').value);
+  const proj=H.p(projId);
+  DB.srs.push({id:DB.srs.length+1,projId,commId,status:'pending',subDate:new Date().toISOString().split('T')[0],revDate:null,notes:''});
+  H.notify(commId,`SRS review assigned: "${proj.title}"`, 'info');H.toast('SRS sent to committee!','ok');saveDB();renderPage('srs-review');
+}
+
+function openSrsModal(srsId){
+  const s=DB.srs.find(x=>x.id===srsId);
+  openModal('SRS Review',`<div class="fg"><label>Review Notes</label><textarea id="srs-notes" rows="3" placeholder="Add review comments...">${H.esc(s.notes)}</textarea></div>`,
+    `<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="srsAction(${srsId},'rejected')">✗ Reject</button><button class="btn btn-green" onclick="srsAction(${srsId},'accepted')">✓ Accept</button>`);
+}
+
+function srsAction(srsId,action){
+  const s=DB.srs.find(x=>x.id===srsId);s.status=action;s.notes=document.getElementById('srs-notes').value.trim();s.revDate=new Date().toISOString().split('T')[0];
+  const proj=H.p(s.projId);H.notify(proj.sId,`SRS ${action}. ${s.notes||''}`,action==='accepted'?'ok':'warn');
+  closeModal();H.toast('SRS review saved!','ok');saveDB();renderPage('srs-review');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: PITCHING MANAGEMENT (Coordinator)
+// ═══════════════════════════════════════════════════════════
+function pgPitchMgmt(){
+  return`
+  <div class="ph"><div><h1>Pitching Management</h1><p>Manage all 4 pitching sessions for each project. Set dates and record scores.</p></div></div>
+  <div class="info-box">ℹ️ Each project has 4 pitching sessions. You and supervisors can set dates. System shows adoption/actuality reports after each session.</div>
+  ${DB.projects.filter(p=>['approved','phase2'].includes(p.status)).map(p=>{
+    const stu=H.u(p.sId);const sup=H.u(p.supId);
+    return`<div class="card">
+      <div class="ch"><h3>${H.esc(p.title)}</h3><div class="flex-c gap-8"><span class="text-sm text-muted">${H.esc(stu.name)}</span>${H.badge(p.phase||'phase1')}</div></div>
+      <div class="cb">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          ${[1,2,3,4].map(n=>{const pt=p.pitchings[n-1];return`<div style="background:${pt?'var(--green-lt)':'var(--bg2)'};border-radius:10px;padding:13px;text-align:center;border:2px solid ${pt?'var(--green)':'var(--border)'}">
+            <div style="font-weight:700;font-size:13px;margin-bottom:6px">Pitching ${n}</div>
+            ${pt?`<div class="text-sm text-muted">${H.fmtDate(pt.date)}</div><div style="font-weight:700;font-size:16px;color:var(--navy)">${pt.score!==null?pt.score+'/100':'Score pending'}</div>`:
+            `<button class="btn btn-navy btn-sm" onclick="openSetPitching(${p.id},${n-1})">+ Set Date</button>`}
+          </div>`;}).join('')}
+        </div>
+        ${p.pitchings.length>0?`<div style="margin-top:14px;padding:13px;background:var(--bg2);border-radius:10px">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px">Adoption / Actuality Report</div>
+          <div style="font-size:13px">Overall trend: ${p.pitchings.filter(x=>x.score!==null).length>0?`Avg score ${Math.round(p.pitchings.filter(x=>x.score!==null).reduce((a,x)=>a+x.score,0)/p.pitchings.filter(x=>x.score!==null).length)}/100. ${p.prog}% complete.`:'No scores recorded yet.'}</div>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty"><div class="ei">🎤</div><h3>No Active Projects</h3><p>Approved projects will appear here.</p></div>'}`;
+}
+
+function openSetPitching(projId,idx){
+  openModal(`Set Pitching ${idx+1} Details`,`
+    <div class="fg"><label>Date <span class="req">*</span></label><input id="pt-date" type="date" min="${new Date().toISOString().split('T')[0]}"/></div>
+    <div class="fg"><label>Session Name</label><input id="pt-name" value="Pitching ${idx+1}"/></div>
+    <div class="fg"><label>Score (if already conducted)</label><input id="pt-score" type="number" min="0" max="100" placeholder="Leave blank if not yet"/></div>
+    <div class="fg"><label>Notes / Review</label><textarea id="pt-note" rows="2" placeholder="Notes about this session..."></textarea></div>
+  `,`<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-navy" onclick="savePitching(${projId},${idx})">Save</button>`);
+}
+
+function savePitching(projId,idx){
+  const proj=H.p(projId);const date=document.getElementById('pt-date').value;const nm=document.getElementById('pt-name').value;const scoreRaw=document.getElementById('pt-score').value;const note=document.getElementById('pt-note').value.trim();
+  if(!date){H.toast('Date is required.','err');return;}
+  const score=scoreRaw!==''?parseInt(scoreRaw):null;
+  while(proj.pitchings.length<=idx)proj.pitchings.push({nm:'',date:null,score:null,note:''});
+  proj.pitchings[idx]={nm,date,score,note};
+  H.notify(proj.sId,`Pitching ${idx+1} set for ${H.fmtDate(date)}.`,'info');
+  closeModal();H.toast('Pitching session saved!','ok');saveDB();renderPage('pitching-mgmt');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: SET PITCHING (Supervisor)
+// ═══════════════════════════════════════════════════════════
+function pgSetPitching(){
+  const ps=H.supPs(CU.id).filter(p=>['approved','phase2'].includes(p.status));
+  return`
+  <div class="ph"><div><h1>Set Pitching Dates</h1><p>Set pitching session dates and record scores for your assigned students.</p></div></div>
+  ${ps.length===0?'<div class="empty"><div class="ei">🎤</div><h3>No Active Projects</h3></div>':
+    ps.map(p=>{const stu=H.u(p.sId);return`<div class="card">
+      <div class="ch"><h3>${H.esc(p.title)}</h3><span class="text-sm text-muted">${H.esc(stu.name)}</span></div>
+      <div class="cb">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          ${[1,2,3,4].map(n=>{const pt=p.pitchings[n-1];return`<div style="background:${pt?'var(--green-lt)':'var(--bg2)'};border-radius:10px;padding:13px;text-align:center;border:2px solid ${pt?'var(--green)':'var(--border)'}">
+            <div style="font-weight:700;font-size:13px;margin-bottom:5px">Pitching ${n}</div>
+            ${pt?`<div class="text-sm text-muted">${H.fmtDate(pt.date)}</div><div style="font-weight:700;font-size:14px;color:var(--navy)">${pt.score!==null?pt.score+'/100':'No score'}</div>`:
+            `<button class="btn btn-navy btn-sm" onclick="openSetPitching(${p.id},${n-1})">+ Set</button>`}
+          </div>`;}).join('')}
+        </div>
+      </div>
+    </div>`;}).join('')}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: ATTENDANCE CONTROL (Coordinator)
+// Req: System automatically rejects project if student misses important phase
+// ═══════════════════════════════════════════════════════════
+function pgAttendance(){
+  const students=DB.users.filter(u=>u.role==='student');
+  return`
+  <div class="ph"><div><h1>Attendance Control</h1><p>Mark attendance for mandatory phases. Missing attendance auto-rejects the project.</p></div></div>
+  <div class="warn-box">⚠️ <strong>Auto-Rejection Rule:</strong> If a student misses a mandatory phase (Phase 1 check, Proposal Defence, Mid-Term), the system will automatically reject their project.</div>
+  <div class="card card-last">
+    <div class="ch"><h3>Student Attendance — Mandatory Phases</h3></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Project</th><th>Phase 1 (%)</th><th>Proposal (%)</th><th>Mid-Term (%)</th><th>Final (%)</th><th>Actions</th></tr></thead><tbody>
+      ${students.map(s=>{const proj=H.sp(s.id);return`<tr>
+        <td><div class="flex-c gap-8"><div class="av av-sm">${H.inits(s.name)}</div><div><div style="font-weight:600">${H.esc(s.name)}</div><div class="text-sm text-muted">${s.sId}</div></div></div></td>
+        <td class="trunc" style="max-width:140px">${proj?H.esc(proj.title):'No project'}</td>
+        ${['p1','proposal','mid','final'].map(k=>`<td><input type="number" min="0" max="100" value="${s.att?.[k]||0}" style="width:60px;border:1.5px solid var(--border);border-radius:6px;padding:4px 7px;font-size:13px;text-align:center;font-family:inherit" id="att-${s.id}-${k}" onchange="updateAtt(${s.id},'${k}',this.value)"/><span style="font-size:11px;color:${(s.att?.[k]||0)>=75?'var(--green)':'var(--red)'}"> ${(s.att?.[k]||0)>=75?'✓':'⚠'}</span></td>`).join('')}
+        <td><button class="btn btn-red btn-sm" onclick="checkAutoReject(${s.id})">Check Auto-Reject</button></td>
+      </tr>`}).join('')}
+    </tbody></table></div>
+  </div>`;
+}
+
+function updateAtt(uid,key,val){
+  const u=H.u(uid);if(!u)return;if(!u.att)u.att={p1:0,proposal:0,mid:0,final:0};
+  u.att[key]=Math.min(100,Math.max(0,parseInt(val)||0));saveDB();
+}
+
+function checkAutoReject(uid){
+  const u=H.u(uid);const proj=H.sp(uid);
+  if(!proj){H.toast('No project for this student.','info');return;}
+  const att=u.att||{p1:0,proposal:0,mid:0,final:0};
+  if(att.p1===0||att.proposal===0||att.mid===0){
+    proj.status='rejected';proj.feedback.push('AUTO-REJECTED: Student missed mandatory phase attendance.');
+    H.notify(uid,'⚠️ Your project was auto-rejected due to missing mandatory phase attendance.','err');
+    H.toast(`${u.name}'s project auto-rejected due to attendance.`,'err');saveDB();renderPage('attendance');
+  } else {H.toast(`${u.name} meets attendance requirements.`,'ok');}
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: PROJECTS (All roles)
+// ═══════════════════════════════════════════════════════════
+function pgProjects(){
+  const role=CU.role;
+  let projs=role==='student'?DB.projects.filter(p=>p.sId===CU.id):role==='supervisor'?H.supPs(CU.id):H.allPs();
+  return`
+  <div class="ph">
+    <div><h1>${role==='student'?'My Project':role==='supervisor'?'My Projects':'All Projects'}</h1><p>${projs.length} project(s)</p></div>
+    ${role==='student'?`<button class="btn btn-navy" onclick="openSubmitModal()">+ Submit Proposal</button>`:''}
+  </div>
+  <div class="fbar">
+    ${['all','pending','approved','revision','rejected','phase2'].map(f=>`<button class="fbtn${f==='all'?' active':''}" onclick="fltProj(this,'${f}')">${f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1)}</button>`).join('')}
+    <div class="srch-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="psrch" placeholder="Search…" oninput="srchProj(this.value)"/></div>
+  </div>
+  <div id="proj-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:16px">
+    ${mkProjCards(projs)}
+  </div>`;
+}
+
+function mkProjCards(list){
+  if(!list.length)return`<div style="grid-column:1/-1"><div class="empty"><div class="ei">🔍</div><h3>No projects found</h3></div></div>`;
+  return list.map(p=>{const stu=H.u(p.sId);const sup=H.u(p.supId);return`
+    <div class="card" style="cursor:pointer;margin-bottom:0;transition:.2s" onmouseenter="this.style.transform='translateY(-3px)'" onmouseleave="this.style.transform=''" onclick="openProjModal(${p.id})">
+      <div style="padding:19px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:9px">${H.badge(p.status)}<span class="badge b-gold">${H.areaLabel(p.area)}</span></div>
+        <div style="font-weight:700;font-size:14.5px;color:var(--navy-dk);margin-bottom:7px;line-height:1.4">${H.esc(p.title)}</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-bottom:11px;line-height:1.5">${H.esc(p.desc.slice(0,80))}…</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:11px">
+          <div>👩‍🎓 ${H.esc(stu.name)} · ${stu.sId}</div>
+          <div>👨‍🏫 ${H.esc(sup.name)}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-sm text-muted">Progress</span><span style="font-weight:700;font-size:12px;color:var(--navy)">${p.prog}%</span></div>
+        ${H.prog(p.prog)}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:11px">
+          <span style="font-size:11.5px;color:var(--light)">📅 ${H.fmtDate(p.submitted)}</span>
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openProjModal(${p.id})">View</button>
+        </div>
+      </div>
+    </div>`;}).join('');
+}
+
+function fltProj(btn,f){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  const role=CU.role;let base=role==='student'?DB.projects.filter(p=>p.sId===CU.id):role==='supervisor'?H.supPs(CU.id):H.allPs();
+  const list=f==='all'?base:base.filter(p=>p.status===f||p.phase===f);
+  document.getElementById('proj-grid').innerHTML=mkProjCards(list);
+}
+
+function srchProj(q){
+  const role=CU.role;let base=role==='student'?DB.projects.filter(p=>p.sId===CU.id):role==='supervisor'?H.supPs(CU.id):H.allPs();
+  if(q){const ql=q.toLowerCase();base=base.filter(p=>p.title.toLowerCase().includes(ql)||H.u(p.sId).name.toLowerCase().includes(ql));}
+  document.getElementById('proj-grid').innerHTML=mkProjCards(base);
+}
+
+function openProjModal(pId){
+  const p=H.p(pId);const stu=H.u(p.sId);const sup=H.u(p.supId);const g=p.grades;const total=H.calcGrade(g);
+  const role=CU.role;const canRev=(role==='supervisor'&&CU.id===p.supId)||role==='coordinator';
+  openModal('Project: '+H.esc(p.title),`
+    <div class="flex-c gap-8" style="flex-wrap:wrap;margin-bottom:13px">${H.badge(p.status)}<span class="badge b-gold">${H.areaLabel(p.area)}</span></div>
+    <p style="font-size:13.5px;color:var(--text);line-height:1.7;margin-bottom:15px">${H.esc(p.desc)}</p>
+    <div class="igrid mb-16">
+      <div class="ig-item"><label>Student</label><span>${H.esc(stu.name)} (${stu.sId})</span></div>
+      <div class="ig-item"><label>Supervisor</label><span>${H.esc(sup.name)}</span></div>
+      <div class="ig-item"><label>Submitted</label><span>${H.fmtDate(p.submitted)}</span></div>
+      <div class="ig-item"><label>Progress</label><span>${p.prog}%</span></div>
+    </div>
+    ${H.msHtml(p.ms)}
+    ${p.feedback.length>0?`<div class="warn-box" style="margin-top:13px"><strong>Feedback:</strong> ${p.feedback.map(f=>H.esc(f)).join('<br>')}</div>`:''}
+    ${canRev&&p.status==='pending'?`<div class="div-line"></div><div class="fg"><label>Review / Feedback</label><textarea id="rev-fb" rows="3" placeholder="Write your review..."></textarea></div>`:''}
+  `,canRev&&p.status==='pending'?`
+    <button class="btn btn-grey" onclick="closeModal()">Close</button>
+    <button class="btn btn-grey" onclick="revProj(${pId},'revision')">↩ Revision</button>
+    <button class="btn btn-red" onclick="revProj(${pId},'rejected')">✗ Reject</button>
+    <button class="btn btn-green" onclick="revProj(${pId},'approved')">✓ Approve</button>
+  `:`<button class="btn btn-grey" onclick="closeModal()">Close</button>`,'modal-lg');
+}
+
+function revProj(pId,action){
+  const p=H.p(pId);const fbEl=document.getElementById('rev-fb');const fb=fbEl?fbEl.value.trim():'';
+  p.status=action;if(action==='approved'){p.approved=new Date().toISOString().split('T')[0];p.phase='phase1';p.ms[0].d=true;p.ms[0].dt=p.approved;}
+  if(fb)p.feedback.push(fb);
+  H.notify(p.sId,`Your project "${p.title}" was ${action}.${fb?' Feedback: '+fb:''}`,action==='approved'?'ok':'warn');
+  closeModal();H.toast(`Project ${action}!`,action==='approved'?'ok':'info');saveDB();renderPage('projects');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: MEETINGS
+// ═══════════════════════════════════════════════════════════
+function pgMeetings(){
+  const role=CU.role;
+  let meets=role==='student'?DB.meetings.filter(m=>m.sId===CU.id):role==='supervisor'?DB.meetings.filter(m=>m.supId===CU.id):DB.meetings;
+  const canSched=role==='student';const canConf=role!=='student';
+  return`
+  <div class="ph">
+    <div><h1>Meetings</h1><p>Schedule and manage supervisor-student meetings</p></div>
+    ${canSched?`<button class="btn btn-navy" onclick="openMeetModal()">+ Request Meeting</button>`:''}
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="swTab(this,'mt-up')">Upcoming (${meets.filter(m=>m.status!=='completed').length})</button>
+    <button class="tab" onclick="swTab(this,'mt-done')">Completed (${meets.filter(m=>m.status==='completed').length})</button>
+  </div>
+  <div id="mt-up">
+    ${meets.filter(m=>m.status!=='completed').map(m=>mkMeetCard(m,canConf)).join('')||'<div class="empty"><div class="ei">📅</div><h3>No upcoming meetings</h3></div>'}
+  </div>
+  <div id="mt-done" class="hidden">
+    ${meets.filter(m=>m.status==='completed').map(m=>mkMeetCard(m,false)).join('')||'<div class="empty"><div class="ei">✅</div><h3>No completed meetings</h3></div>'}
+  </div>`;
+}
+
+function mkMeetCard(m,canConf){
+  const stu=H.u(m.sId);const sup=H.u(m.supId);const proj=H.p(m.projId);
+  return`<div class="card" style="margin-bottom:15px"><div class="cb">
+    <div class="flex-c gap-16" style="flex-wrap:wrap;align-items:flex-start">
+      <div style="width:46px;height:46px;background:rgba(26,58,92,.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0">📅</div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:7px">
+          <div><div style="font-weight:700;font-size:15px;color:var(--navy-dk)">${proj?H.esc(proj.title):'Meeting'}</div>
+          <div class="text-sm text-muted mt-4">👩‍🎓 ${H.esc(stu.name)} &nbsp;·&nbsp; 👨‍🏫 ${H.esc(sup.name)}</div></div>
+          ${H.badge(m.status)}
+        </div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:13px">
+          <div><span style="font-size:10.5px;color:var(--light);font-weight:700;text-transform:uppercase">Date</span><div style="font-weight:600">${H.fmtDate(m.date)}</div></div>
+          <div><span style="font-size:10.5px;color:var(--light);font-weight:700;text-transform:uppercase">Time</span><div style="font-weight:600">${m.time}</div></div>
+          <div style="flex:1"><span style="font-size:10.5px;color:var(--light);font-weight:700;text-transform:uppercase">Agenda</span><div>${H.esc(m.agenda)}</div></div>
+        </div>
+        ${m.minutes?`<div style="margin-top:10px;background:var(--bg2);border-radius:9px;padding:11px"><div style="font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px">Minutes</div><div style="font-size:13px">${H.esc(m.minutes)}</div></div>`:''}
+      </div>
+      ${canConf&&m.status==='pending'?`<div style="display:flex;flex-direction:column;gap:7px;flex-shrink:0">
+        <button class="btn btn-green btn-sm" onclick="updMeet(${m.id},'confirmed')">✓ Confirm</button>
+        <button class="btn btn-red btn-sm" onclick="updMeet(${m.id},'cancelled')">✗ Cancel</button>
+      </div>`:canConf&&m.status==='confirmed'?`<div style="display:flex;flex-direction:column;gap:7px;flex-shrink:0">
+        <button class="btn btn-grey btn-sm" onclick="openMinsModal(${m.id})">📝 Minutes</button>
+        <button class="btn btn-green btn-sm" onclick="updMeet(${m.id},'completed')">✓ Done</button>
+      </div>`:''}
+    </div>
+  </div></div>`;
+}
+
+function openMeetModal(){
+  const ps=DB.projects.filter(p=>p.sId===CU.id);
+  if(!ps.length){H.toast('Submit a project first.','err');return;}
+  openModal('Request a Meeting',`
+    <div class="fg"><label>Project <span class="req">*</span></label><select id="m-proj">${ps.map(p=>`<option value="${p.id}">${H.esc(p.title)}</option>`).join('')}</select></div>
+    <div class="frow">
+      <div class="fg"><label>Date <span class="req">*</span></label><input id="m-date" type="date" min="${new Date().toISOString().split('T')[0]}"/></div>
+      <div class="fg"><label>Time <span class="req">*</span></label><input id="m-time" type="time" value="10:00"/></div>
+    </div>
+    <div class="fg"><label>Agenda <span class="req">*</span></label><textarea id="m-agenda" rows="3" placeholder="What will you discuss?"></textarea></div>
+  `,`<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-navy" onclick="submitMeet()">📅 Send Request</button>`);
+}
+
+function submitMeet(){
+  const projId=parseInt(document.getElementById('m-proj').value);const date=document.getElementById('m-date').value;const time=document.getElementById('m-time').value;const agenda=document.getElementById('m-agenda').value.trim();
+  if(!date||!time||!agenda){H.toast('Fill all fields.','err');return;}
+  const proj=H.p(projId);
+  DB.meetings.push({id:DB.nextId.meet++,projId,sId:proj.sId,supId:proj.supId,date,time,agenda,status:'pending',minutes:''});
+  H.notify(proj.supId,`Meeting request from ${CU.name} on ${H.fmtDate(date)}.`,'info');
+  closeModal();H.toast('Meeting request sent!','ok');saveDB();renderPage('meetings');
+}
+
+function updMeet(id,status){const m=DB.meetings.find(x=>x.id===id);if(m){m.status=status;if(status==='confirmed')H.notify(m.sId,`Meeting on ${H.fmtDate(m.date)} confirmed!`,'ok');}H.toast(`Meeting ${status}!`,'ok');saveDB();renderPage('meetings');}
+
+function openMinsModal(id){const m=DB.meetings.find(x=>x.id===id);
+  openModal('Add Meeting Minutes',`<div class="fg"><label>Minutes / Notes</label><textarea id="mins" rows="4" placeholder="Summarize discussion...">${H.esc(m.minutes)}</textarea></div>`,
+    `<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-navy" onclick="saveMins(${id})">Save</button>`);
+}
+function saveMins(id){const m=DB.meetings.find(x=>x.id===id);m.minutes=document.getElementById('mins').value.trim();closeModal();H.toast('Minutes saved!','ok');saveDB();renderPage('meetings');}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: GRADES
+// ═══════════════════════════════════════════════════════════
+function pgGrades(){
+  const role=CU.role;
+  let ps=role==='student'?DB.projects.filter(p=>p.sId===CU.id):role==='supervisor'?H.supPs(CU.id):H.allPs();
+  if(role==='student'&&ps.length>0)return stdGradeView(ps[0]);
+  const canEdit=role!=='student';
+  return`
+  <div class="ph"><div><h1>Grades & Evaluation</h1><p>Assessment: Proposal 25% · Mid-Term 25% · Final 35% · Viva 15%</p></div></div>
+  <div class="card card-last"><div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Project</th><th>Supervisor</th><th>Proposal<br><small>25%</small></th><th>Mid-Term<br><small>25%</small></th><th>Final<br><small>35%</small></th><th>Viva<br><small>15%</small></th><th>Total</th><th>Grade</th></tr></thead><tbody>
+    ${ps.map(p=>{const stu=H.u(p.sId);const sup=H.u(p.supId);const g=p.grades;const total=H.calcGrade(g);const gc=total===null?'var(--light)':total>=60?'var(--green)':'var(--red)';return`<tr>
+      <td><div class="flex-c gap-8"><div class="av av-sm">${H.inits(stu.name)}</div><div><div style="font-weight:600">${H.esc(stu.name)}</div><div class="text-sm text-muted">${stu.sId}</div></div></div></td>
+      <td class="trunc" style="max-width:140px">${H.esc(p.title)}</td>
+      <td class="text-sm">${H.esc(sup.name)}</td>
+      ${['proposal','mid','final','viva'].map(f=>`<td>${canEdit?`<input type="number" min="0" max="100" value="${g[f]!=null?g[f]:''}" placeholder="—" style="width:55px;border:1.5px solid var(--border);border-radius:6px;padding:4px 7px;font-size:13px;text-align:center;font-family:inherit" onchange="updGrade(${p.id},'${f}',this.value)">`:
+        `<span style="font-weight:${g[f]!=null?700:400};color:${g[f]!=null?(g[f]>=60?'var(--green)':'var(--red)'):'var(--light)'};font-size:15px">${g[f]!=null?g[f]:'—'}</span>`}</td>`).join('')}
+      <td><span style="font-weight:700;font-size:16px;color:${gc}">${total!==null?total:'—'}</span></td>
+      <td><span style="font-weight:800;font-size:17px;color:${gc};font-family:'Playfair Display',serif">${H.ltGrade(total)}</span></td>
+    </tr>`}).join('')}
+  </tbody></table></div></div>`;
+}
+
+function stdGradeView(p){const g=p.grades;const total=H.calcGrade(g);return`
+  <div class="ph"><div><h1>My Grades</h1><p>${H.esc(p.title)}</p></div></div>
+  <div class="g11">
+    <div class="card card-last" style="text-align:center">
+      <div class="cb">
+        <div style="font-family:'Playfair Display',serif;font-size:70px;font-weight:800;color:${total&&total>=60?'var(--green)':'var(--light)'};line-height:1">${H.ltGrade(total)}</div>
+        <div style="font-size:26px;color:var(--muted)">${total!==null?total+'%':'Pending'}</div>
+        <div class="div-line"></div>
+        <div class="text-muted text-sm">CGPA: <strong>${CU.cgpa}</strong></div>
+        <div style="margin-top:8px">${H.badge(p.status)}</div>
+        <canvas id="gradeChart" style="margin-top:16px" height="200"></canvas>
+      </div>
+    </div>
+    <div class="card card-last">
+      <div class="ch"><h3>Grade Breakdown</h3></div>
+      <div class="cb">
+        ${[['Proposal','proposal',25],['Mid-Term','mid',25],['Final Exam','final',35],['Viva','viva',15]].map(([l,k,w])=>`
+        <div style="margin-bottom:17px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-weight:600">${l} <span class="text-sm text-muted">(${w}%)</span></span>
+          <span style="font-weight:700;font-size:15px;color:${g[k]!=null?(g[k]>=60?'var(--green)':'var(--red)'):'var(--light)'}">${g[k]!=null?g[k]+'/100':'Not yet'}</span></div>
+          ${H.prog(g[k]||0,k==='proposal'?'pf-gold':'pf-green')}
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function updGrade(projId,field,val){const p=H.p(projId);if(!p)return;const num=parseFloat(val);p.grades[field]=(val===''||isNaN(num))?null:Math.min(100,Math.max(0,num));if(val!=='')H.notify(p.sId,`Your ${field} grade updated: ${p.grades[field]}/100`,'info');saveDB();}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: IEEE DOCUMENTS
+// ═══════════════════════════════════════════════════════════
+function pgIeeeDocs(){
+  return`
+  <div class="ph">
+    <div><h1>IEEE Documents & Templates</h1><p>All FYP documentation must follow IEEE format. Download templates and guidelines.</p></div>
+    ${CU.role==='coordinator'?`<button class="btn btn-navy" onclick="openAddDocModal()">+ Upload Document</button>`:''}
+  </div>
+  <div class="info-box">ℹ️ <strong>IEEE Requirement:</strong> All documents (Proposal, SRS, Design, Test Plan) must strictly follow IEEE formats. Submissions not following IEEE format will be returned for revision.</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:15px">
+    ${DB.ieeeDocs.map(d=>`<div class="card" style="margin-bottom:0">
+      <div class="cb">
+        <div class="flex-c gap-13 mb-16"><div style="width:44px;height:44px;background:rgba(26,58,92,.1);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0">📄</div>
+        <div><div style="font-weight:700;font-size:13.5px;color:var(--navy-dk)">${H.esc(d.name)}</div><div class="text-sm text-muted">${d.size} · ${H.fmtDate(d.date)}</div></div></div>
+        <span class="badge ${d.type==='template'?'b-conf':'b-gold'}" style="margin-bottom:11px">${d.type==='template'?'IEEE Template':'Guideline'}</span>
+        <div class="flex-c gap-8 mt-8">
+          <button class="btn btn-navy btn-sm" onclick="H.toast('Download started! (prototype)','ok')">⬇ Download</button>
+          <button class="btn btn-grey btn-sm" onclick="H.toast('Opening preview… (prototype)','info')">👁 Preview</button>
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function openAddDocModal(){
+  openModal('Upload IEEE Document',`
+    <div class="fg"><label>Document Name <span class="req">*</span></label><input id="nd-name" placeholder="e.g. IEEE 830 SRS Template"/></div>
+    <div class="frow">
+      <div class="fg"><label>Type</label><select id="nd-type"><option value="template">IEEE Template</option><option value="guideline">Guideline</option></select></div>
+      <div class="fg"><label>Size</label><input id="nd-size" placeholder="e.g. 350 KB"/></div>
+    </div>
+    <div class="fg"><label>Upload File (prototype)</label><input type="file" accept=".pdf,.doc,.docx"/></div>
+  `,`<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-navy" onclick="addDoc()">Upload</button>`);
+}
+
+function addDoc(){
+  const name=document.getElementById('nd-name').value.trim();const type=document.getElementById('nd-type').value;const size=document.getElementById('nd-size').value||'—';
+  if(!name){H.toast('Document name required.','err');return;}
+  DB.ieeeDocs.push({id:DB.ieeeDocs.length+1,name,type,size,date:new Date().toISOString().split('T')[0]});
+  closeModal();H.toast('Document uploaded!','ok');saveDB();renderPage('ieee-docs');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: MESSAGES — available to ALL entities
+// ═══════════════════════════════════════════════════════════
+let selContact=null;
+function pgMessages(){
+  const msgs=H.uMsgs(CU.id);
+  const contacts=DB.users.filter(u=>u.id!==CU.id);
+  return`
+  <div class="ph"><div><h1>Messages</h1><p>Direct messaging — available to all entities</p></div></div>
+  <div class="g2" style="gap:16px;align-items:start">
+    <div class="card card-last">
+      <div class="ch"><h3>${selContact?H.esc(H.u(selContact)?.name||'Unknown'):'Select a Contact'}</h3></div>
+      <div class="chat-area" id="chat-area">
+        ${msgs.filter(m=>selContact?(m.from===selContact&&m.to===CU.id)||(m.from===CU.id&&m.to===selContact):true).map(m=>{
+          const isMe=m.from===CU.id;const other=isMe?H.u(m.to):H.u(m.from);
+          return`<div style="display:flex;flex-direction:column">
+            <div class="${isMe?'msg-out':'msg-in'}">${H.esc(m.txt)}</div>
+            <div class="msg-meta ${isMe?'r':''}">${isMe?'You':H.esc(other?.name||'?')} · ${m.time}</div>
+          </div>`;
+        }).join('')||'<div style="text-align:center;color:var(--muted);padding:28px;font-size:13px">Select a contact to start messaging.</div>'}
+      </div>
+      <div class="chat-inp">
+        <input id="chat-inp" placeholder="Type your message…" onkeydown="if(event.key==='Enter')sendMsg()"/>
+        <button class="btn btn-navy btn-sm" onclick="sendMsg()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Send
+        </button>
+      </div>
+    </div>
+    <div class="card card-last">
+      <div class="ch"><h3>Contacts (${contacts.length})</h3></div>
+      <div style="padding:11px">
+        ${contacts.map(c=>{
+          const unreadFromC=DB.messages.filter(m=>m.from===c.id&&m.to===CU.id&&!m.read).length;
+          return`<div class="flex-c gap-11" style="padding:10px;border-radius:9px;cursor:pointer;margin-bottom:5px;transition:.2s;background:${selContact===c.id?'var(--bg2)':''}" onmouseenter="this.style.background='var(--bg2)'" onmouseleave="this.style.background='${selContact===c.id?'var(--bg2)':''}'" onclick="selMsg(${c.id})">
+            <div class="av av-md ${c.role==='supervisor'?'av-gold':c.role==='coordinator'?'av-green':''}">${H.inits(c.name)}</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">${H.esc(c.name)}</div><div class="text-sm text-muted" style="text-transform:capitalize">${c.desig||c.role}</div></div>
+            ${unreadFromC>0?`<span class="nb-badge">${unreadFromC}</span>`:'<div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>'}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function selMsg(id){
+  selContact=id;
+  DB.messages.filter(m=>m.from===id&&m.to===CU.id).forEach(m=>m.read=true);
+  saveDB();renderPage('messages');
+}
+
+function sendMsg(){
+  const inp=document.getElementById('chat-inp');const txt=inp.value.trim();if(!txt){H.toast('Type a message first.','err');return;}
+  const toId=selContact||9;
+  DB.messages.push({id:DB.nextId.msg++,from:CU.id,to:toId,txt,time:'Just now',read:false});
+  H.notify(toId,`New message from ${CU.name}: "${txt.slice(0,50)}"`,'info');
+  inp.value='';saveDB();renderPage('messages');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════
+function pgNotifs(){
+  const notifs=H.uNotifs(CU.id);const unread=notifs.filter(n=>!n.read);
+  return`
+  <div class="ph">
+    <div><h1>Notifications</h1><p>${unread.length} unread</p></div>
+    ${unread.length>0?`<button class="btn btn-grey btn-sm" onclick="markAllRead()">✓ Mark All Read</button>`:''}
+  </div>
+  <div class="card card-last">
+    <div style="padding:0 20px">
+      ${notifs.length===0?`<div class="empty"><div class="ei">🔔</div><h3>All caught up!</h3></div>`:
+        notifs.slice().reverse().map(n=>{
+          const icos={ok:'✅',info:'ℹ️',warn:'⚠️',err:'❌'};
+          const bgs={ok:'var(--green-lt)',info:'var(--blue-lt)',warn:'var(--amber-lt)',err:'var(--red-lt)'};
+          return`<div class="flex-c gap-13" style="padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;background:${n.read?'':'rgba(26,58,92,.02)'}" onclick="markRead(${n.id})">
+            <div style="width:39px;height:39px;border-radius:10px;background:${bgs[n.type]||'var(--bg2)'};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${icos[n.type]||'🔔'}</div>
+            <div style="flex:1"><div style="font-size:13.5px;font-weight:${n.read?400:700};color:var(--text)">${H.esc(n.txt)}</div><div class="text-sm text-muted mt-4">${n.time}</div></div>
+            ${n.read?'':`<div style="width:8px;height:8px;border-radius:50%;background:var(--navy);flex-shrink:0"></div>`}
+          </div>`;
+        }).join('')}
+    </div>
+  </div>`;
+}
+
+function markRead(id){const n=DB.notifications.find(x=>x.id===id);if(n){n.read=true;updateNotifDot();saveDB();renderPage('notifications');}}
+function markAllRead(){H.uNotifs(CU.id).forEach(n=>n.read=true);updateNotifDot();saveDB();renderPage('notifications');}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: STUDENTS (Coordinator)
+// ═══════════════════════════════════════════════════════════
+function pgStudents(){
+  const students=DB.users.filter(u=>u.role==='student');
+  return`
+  <div class="ph"><div><h1>Students</h1><p>${students.length} students registered</p></div></div>
+  <div class="card card-last"><div class="tbl-wrap"><table><thead><tr><th>Student</th><th>Roll No</th><th>Sect.</th><th>Credits</th><th>CGPA</th><th>Semester</th><th>Project</th><th>Supervisor</th><th>Status</th><th>Phase 1 Att.</th></tr></thead><tbody>
+    ${students.map(s=>{const proj=H.sp(s.id);const sup=proj?H.u(proj.supId):null;const cOk=s.credits>=80;return`<tr>
+      <td><div class="flex-c gap-8"><div class="av av-sm">${H.inits(s.name)}</div><div><div style="font-weight:600">${H.esc(s.name)}</div><div class="text-sm text-muted">${s.email}</div></div></div></td>
+      <td><strong>${s.sId}</strong></td>
+      <td>${s.section||'—'}</td>
+      <td><strong style="color:${cOk?'var(--green)':'var(--red)'}">${s.credits}</strong> ${cOk?'✓':'⚠'}</td>
+      <td><strong style="color:${parseFloat(s.cgpa)>=3.5?'var(--green)':parseFloat(s.cgpa)>=2.5?'var(--amber)':'var(--red)'}">${s.cgpa}</strong></td>
+      <td>${s.semester}</td>
+      <td class="trunc" style="max-width:140px">${proj?H.esc(proj.title):'<span class="text-muted">None</span>'}</td>
+      <td class="text-sm">${sup?H.esc(sup.name):'—'}</td>
+      <td>${proj?H.badge(proj.status):'<span class="badge b-conf">No Project</span>'}</td>
+      <td><strong style="color:${(s.att?.p1||0)>=75?'var(--green)':'var(--red)'}">${s.att?.p1||0}%</strong></td>
+    </tr>`}).join('')}
+  </tbody></table></div></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: REPORTS (Coordinator) with Charts
+// ═══════════════════════════════════════════════════════════
+function pgReports(){
+  const total=DB.projects.length;const aS={};DB.projects.forEach(p=>{aS[p.area]=(aS[p.area]||0)+1;});
+  const avgProg=Math.round(DB.projects.reduce((a,p)=>a+p.prog,0)/total)||0;
+  return`
+  <div class="ph">
+    <div><h1>FYP Reports & Analytics</h1><p>Programme statistics — ${new Date().getFullYear()}</p></div>
+    <button class="btn btn-grey btn-sm" onclick="window.print()">🖨️ Print</button>
+  </div>
+  <div class="stats-grid">
+    ${[['Total',total,'ic-n','📋'],['Active',DB.projects.filter(p=>['approved','phase2'].includes(p.status)).length,'ic-gr','✅'],['Pending',DB.projects.filter(p=>p.status==='pending').length,'ic-a','⏳'],['Avg Progress',avgProg+'%','ic-b','📊']].map(([l,v,ic,i])=>`<div class="sc"><div class="sc-ico ${ic}">${i}</div><div><div class="sc-v">${v}</div><div class="sc-l">${l}</div></div></div>`).join('')}
+  </div>
+  <div class="g11">
+    <div class="card"><div class="ch"><h3>Status Distribution</h3></div><div class="cb"><canvas id="rpt-pie" height="220"></canvas></div></div>
+    <div class="card"><div class="ch"><h3>Projects by Area</h3></div><div class="cb"><canvas id="rpt-area" height="220"></canvas></div></div>
+  </div>
+  <div class="card"><div class="ch"><h3>Overall Progress per Project</h3></div><div class="cb"><canvas id="rpt-prog" height="180"></canvas></div></div>
+  <div class="card card-last">
+    <div class="ch"><h3>Full Report</h3></div>
+    <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Project</th><th>Student</th><th>Supervisor</th><th>Area</th><th>Phase</th><th>Status</th><th>Progress</th><th>Credits</th></tr></thead><tbody>
+      ${DB.projects.map((p,i)=>{const s=H.u(p.sId);const sv=H.u(p.supId);return`<tr>
+        <td>${i+1}</td>
+        <td class="trunc" style="max-width:180px;font-weight:500">${H.esc(p.title)}</td>
+        <td>${H.esc(s.name)}</td><td>${H.esc(sv.name)}</td>
+        <td><span class="badge b-gold">${H.areaLabel(p.area)}</span></td>
+        <td>${H.badge(p.phase||'phase1')}</td>
+        <td>${H.badge(p.status)}</td>
+        <td style="min-width:110px">${H.prog(p.prog)}<span class="text-sm text-muted">${p.prog}%</span></td>
+        <td><strong style="color:${s.credits>=80?'var(--green)':'var(--red)'}">${s.credits}</strong></td>
+      </tr>`}).join('')}
+    </tbody></table></div>
+  </div>`;
+}
+
+function drawReportCharts(){
+  const ps=DB.projects;
+  const pie=document.getElementById('rpt-pie');
+  if(pie)new Chart(pie,{type:'doughnut',data:{labels:['Approved','Phase 2','Pending','Revision','Rejected'],datasets:[{data:[ps.filter(p=>p.status==='approved').length,ps.filter(p=>p.status==='phase2').length,ps.filter(p=>p.status==='pending').length,ps.filter(p=>p.status==='revision').length,ps.filter(p=>p.status==='rejected').length],backgroundColor:['#1b6b3a','#1a3a5c','#7a4f00','#8b1a1a','#6b7280'],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+  const area=document.getElementById('rpt-area');
+  if(area){const aS={};ps.forEach(p=>{aS[p.area]=(aS[p.area]||0)+1;});new Chart(area,{type:'bar',data:{labels:Object.keys(aS).map(H.areaLabel),datasets:[{label:'Projects',data:Object.values(aS),backgroundColor:'rgba(26,58,92,.75)',borderRadius:7}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});}
+  const prog=document.getElementById('rpt-prog');
+  if(prog)new Chart(prog,{type:'bar',data:{labels:ps.map(p=>p.title.slice(0,18)+'…'),datasets:[{label:'Progress %',data:ps.map(p=>p.prog),backgroundColor:'rgba(200,168,75,.75)',borderRadius:7}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100}}}});
+  // Grade chart for student
+  const gc=document.getElementById('gradeChart');
+  if(gc&&CU.role==='student'){const proj=H.sp(CU.id);const g=proj?proj.grades:{};new Chart(gc,{type:'bar',data:{labels:['Proposal','Mid-Term','Final','Viva'],datasets:[{label:'Marks',data:[g.proposal||0,g.mid||0,g.final||0,g.viva||0],backgroundColor:['rgba(26,58,92,.8)','rgba(200,168,75,.8)','rgba(27,107,58,.8)','rgba(139,26,26,.8)'],borderRadius:7}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100}}}});}
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: CHANGE PASSWORD
+// ═══════════════════════════════════════════════════════════
+function pgChangePass(){
+  return`
+  <div class="ph"><div><h1>Change Password</h1><p>Update your login password anytime.</p></div></div>
+  <div class="card" style="max-width:480px">
+    <div class="ch"><h3>🔒 Password Settings</h3></div>
+    <div class="cb">
+      <div class="fg"><label>Current Password <span class="req">*</span></label><input id="cp-old" type="password" placeholder="Enter current password"/></div>
+      <div class="fg"><label>New Password <span class="req">*</span></label><input id="cp-new" type="password" placeholder="Enter new password"/></div>
+      <div class="fg"><label>Confirm New Password <span class="req">*</span></label><input id="cp-conf" type="password" placeholder="Confirm new password"/></div>
+      <div class="err-box" id="cp-err"></div>
+      <button class="btn btn-navy" onclick="changePass()">Update Password</button>
+    </div>
+  </div>`;
+}
+
+function changePass(){
+  const oldP=document.getElementById('cp-old').value;const newP=document.getElementById('cp-new').value;const confP=document.getElementById('cp-conf').value;
+  const err=document.getElementById('cp-err');
+  if(oldP!==CU.pass){err.style.display='block';err.textContent='Current password is incorrect.';return;}
+  if(newP.length<6){err.style.display='block';err.textContent='New password must be at least 6 characters.';return;}
+  if(newP!==confP){err.style.display='block';err.textContent='Passwords do not match.';return;}
+  err.style.display='none';
+  const u=H.u(CU.id);u.pass=newP;CU.pass=newP;saveDB();H.toast('Password updated successfully!','ok');
+  document.getElementById('cp-old').value='';document.getElementById('cp-new').value='';document.getElementById('cp-conf').value='';
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUBMIT PROPOSAL MODAL
+// ═══════════════════════════════════════════════════════════
+function openSubmitModal(edit=false){
+  const existing=edit?H.sp(CU.id):null;const sups=DB.users.filter(u=>u.role==='supervisor');
+  openModal('Submit FYP Proposal',`
+    ${!H.creditOk(CU.id)?`<div class="warn-box">⚠️ You have only ${CU.credits} credit hours. Minimum 80 required.</div>`:''}
+    <div class="info-box">ℹ️ All documentation must follow IEEE format. Project must be completed in 7th Semester. Select 3 supervisors from the "Select Supervisors" page.</div>
+    <div class="fg"><label>Project Title <span class="req">*</span></label><input id="sp-title" placeholder="e.g. Smart Campus Navigation System" value="${existing?H.esc(existing.title):''}"/></div>
+    <div class="frow">
+      <div class="fg"><label>Research Area</label><select id="sp-area">
+        ${['software','ai','web','mobile','network','data','iot'].map(a=>`<option value="${a}"${existing&&existing.area===a?' selected':''}>${H.areaLabel(a)}</option>`).join('')}
+      </select></div>
+      <div class="fg"><label>Primary Supervisor</label><select id="sp-sup">
+        ${sups.map(s=>`<option value="${s.id}"${existing&&existing.supId===s.id?' selected':''}>${H.esc(s.name)}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="fg"><label>Project Description / Abstract <span class="req">*</span></label>
+      <textarea id="sp-desc" rows="5" placeholder="Describe project, objectives, scope, and expected outcomes in IEEE abstract format...">${existing?H.esc(existing.desc):''}</textarea></div>
+  `,`<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-navy" onclick="submitProposal(${edit})">${edit?'Update':'Submit'} Proposal</button>`);
+}
+
+function submitProposal(edit=false){
+  const title=document.getElementById('sp-title').value.trim();const desc=document.getElementById('sp-desc').value.trim();
+  const area=document.getElementById('sp-area').value;const supId=parseInt(document.getElementById('sp-sup').value);
+  if(!title||!desc){H.toast('Fill all required fields.','err');return;}
+  if(edit){const p=H.sp(CU.id);p.title=title;p.desc=desc;p.area=area;p.supId=supId;H.toast('Proposal updated!','ok');}
+  else{
+    const np={id:DB.nextId.proj++,sId:CU.id,supId,status:'pending',phase:'phase1',prog:0,title,desc,area,submitted:new Date().toISOString().split('T')[0],approved:null,fcc:null,fccNote:'',
+      supReqs:[{sid:supId,st:'pending'}],ms:[{n:'Proposal',d:false,dt:null},{n:'Lit Review',d:false,dt:null},{n:'SRS',d:false,dt:null},{n:'Design',d:false,dt:null},{n:'Impl.',d:false,dt:null},{n:'Testing',d:false,dt:null},{n:'Defense',d:false,dt:null}],
+      grades:{proposal:null,mid:null,final:null,viva:null},pitchings:[],docs:[],feedback:[]};
+    DB.projects.push(np);
+    H.notify(supId,`New proposal from ${CU.name}: "${title}"`,'info');H.notify(9,`New proposal submitted by ${CU.name}.`,'info');
+    H.toast('Proposal submitted!','ok');
+  }
+  closeModal();saveDB();renderPage('my-project');
+}
+
+// Progress update modal
+function openProgressModal(projId){
+  const p=H.p(projId);
+  openModal('Update Project Progress',`
+    <div class="fg"><label>Current Progress (%)</label><input id="m-prog" type="number" min="0" max="100" value="${p.prog}"/></div>
+    <div class="fg"><label>Update Milestones</label>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${p.ms.map((m,i)=>`<label style="display:flex;align-items:center;gap:10px;cursor:pointer"><input type="checkbox" id="ms-${i}" ${m.d?'checked':''} style="width:15px;height:15px"><span style="font-size:13.5px">${m.n}</span></label>`).join('')}
+      </div>
+    </div>
+  `,`<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-navy" onclick="saveProgress(${projId})">Save</button>`);
+}
+
+function saveProgress(pId){
+  const p=H.p(pId);const prog=parseInt(document.getElementById('m-prog').value)||0;
+  p.prog=Math.min(100,Math.max(0,prog));
+  p.ms.forEach((m,i)=>{const ck=document.getElementById('ms-'+i).checked;if(ck&&!m.d){m.d=true;m.dt=new Date().toISOString().split('T')[0];}if(!ck){m.d=false;m.dt=null;}});
+  const allDone=p.ms.every(m=>m.d);
+  if(allDone&&p.phase==='phase1'){p.phase='phase2';p.status='phase2';H.notify(p.sId,'🎉 All Phase 1 milestones done! You have advanced to Phase 2!','ok');}
+  closeModal();H.toast('Progress updated!','ok');saveDB();renderPage('my-project');
+}
+
+// Document upload modal
+function openUploadDocModal(projId){
+  openModal('Upload Document',`
+    <div class="info-box">All documents must follow IEEE format. Templates: <a onclick="goPage('ieee-docs');closeModal()" style="color:var(--navy);cursor:pointer;font-weight:600">IEEE Documents</a></div>
+    <div class="fg"><label>Document Name <span class="req">*</span></label><input id="doc-nm" placeholder="e.g. SRS_IEEE_Final"/></div>
+    <div class="fg"><label>Document Type</label><select id="doc-tp"><option>Proposal (IEEE)</option><option>SRS (IEEE 830)</option><option>Design Document</option><option>Test Plan (IEEE 829)</option><option>Final Report</option></select></div>
+    <div class="fg"><label>Upload (prototype)</label><input type="file" accept=".pdf,.doc,.docx"/></div>
+  `,`<button class="btn btn-grey" onclick="closeModal()">Cancel</button><button class="btn btn-navy" onclick="uploadDoc(${projId})">Upload</button>`);
+}
+
+function uploadDoc(projId){
+  const nm=document.getElementById('doc-nm').value.trim();if(!nm){H.toast('Document name required.','err');return;}
+  const p=H.p(projId);p.docs.push(nm+'.pdf');closeModal();H.toast('Document uploaded!','ok');saveDB();renderPage('my-project');
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL + UTILITY FUNCTIONS
+// ═══════════════════════════════════════════════════════════
+function openModal(title,body,footer='',cls=''){
+  document.getElementById('modal-root').innerHTML=`
+  <div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal ${cls}">
+      <div class="mh"><h2>${title}</h2>
+        <button class="mclose" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="mb">${body}</div>
+      ${footer?`<div class="mf">${footer}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function closeModal(){document.getElementById('modal-root').innerHTML='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+function swTab(btn,showId){
+  btn.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
+  const prefix=showId.split('-').slice(0,-1).join('-');
+  document.querySelectorAll(`[id^="${prefix}-"]`).forEach(el=>{if(!el.classList.contains('tab')&&!el.classList.contains('tabs'))el.classList.add('hidden');});
+  const tgt=document.getElementById(showId);if(tgt)tgt.classList.remove('hidden');
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOT — check session on load
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  selectRole('student');selectRegRole('student');
+  // Restore session
+  try{const s=sessionStorage.getItem('fyp_cu');if(s){CU=JSON.parse(s);document.getElementById('auth-wrap').style.display='none';document.getElementById('app-wrap').style.display='block';initShell();goPage('dashboard');return;}}catch(e){}
+  document.getElementById('auth-wrap').style.display='flex';
+});
+
+// Save session on login
+const _origDoLogin=doLogin;
+window.doLogin=function(){
+  _origDoLogin();
+  if(CU)sessionStorage.setItem('fyp_cu',JSON.stringify(CU));
+};
+</script>
+</body>
+</html>
